@@ -7,7 +7,21 @@ class Index extends \think\Controller
 {
     public function index()
     {	
-        $data = db('attach')->select();
-        return json_encode($data);
+
     }
+// 全部文章
+    public function topic(){
+    	$topData = db('topic')->order('id desc')->select();
+    	return json_encode($topData);
+    }
+    // 招聘
+    public function job(){
+    	if(empty(input('type'))){
+    		$job = db('job')->order('id desc')->limit(5)->select();
+    	}else{
+    		$job = db('job')->order('id desc')->select();
+    	}
+    	return json_encode($job);
+    }
+    
 }

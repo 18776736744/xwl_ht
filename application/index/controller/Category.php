@@ -16,4 +16,5 @@ class Category extends \think\Controller
     	->select();
     	return json_encode($catelist);
     }
+    
 }
