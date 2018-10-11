@@ -27,7 +27,14 @@ class Index extends \think\Controller
 				$job [] = $question;
 			}
     	}else{
-    		$job = db('job')->order('id desc')->select();
+    		$jobs = db('job')->order('id desc')->select();
+    		$job=[];
+    		foreach ( $jobs as $question ) {
+				 $squ = explode('市',  str_replace(',','', $question['address']));
+				 $question['address'] = str_replace('省', '-', $squ[0]);
+				 $question['pub_time'] = date('Y-m-d',$question['pub_time']);
+				$job [] = $question;
+			}
     	}
     	return json($job);
     }
