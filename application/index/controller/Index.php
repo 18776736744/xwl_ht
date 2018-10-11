@@ -23,6 +23,7 @@ class Index extends \think\Controller
     		foreach ( $jobs as $question ) {
 				 $squ = explode('市',  str_replace(',','', $question['address']));
 				 $question['address'] = str_replace('省', '-', $squ[0]);
+				 $question['pub_time'] = date('Y-m-d',$question['pub_time']);
 				$job [] = $question;
 			}
     	}else{
