@@ -1,0 +1,74 @@
+<?php
+namespace app\index\controller;
+use think\Db;
+
+
+class Article extends \think\Controller
+{
+    // 上传图片
+    public function uploadImg()
+    {	
+        return saveImg('image');   
+    }
+
+    // 保存文章
+    public function save()
+    {
+        $uid = input('uid');
+        $id = input('id');
+        $t = input('t');
+        if ($t == 'edit') {
+            $id = db('topic')->where("id=$id")->update([
+                'title'=>input('title'),
+                'articleclassid'=>input('articleclassid'),
+            ]);
+        }else{
+            $uname = db("user")->where("uid=$uid")->value("username");
+            $id = db('topic')->insertGetId([
+                'authorid'=>$uid,
+                'author'=>$uname,
+                'title'=>input('title'),
+                'articleclassid'=>input('articleclassid'),
+                'views'=>1,
+                'isphone'=>1,
+                'viewtime'=>time(),
+                // 'tag'=>input('tag'),
+                'image'=>input('image')
+            ]);
+        }
+        return $id; 
+
+       
+    }
+    
+    // 获取列表
+    public function lists()
+    {
+        $uid = input('uid');
+
+        $lists = db("topic")
+                ->where("authorid=$uid")
+                ->field("title,id,viewtime")
+                ->order('id desc')
+                ->select();
+        return json($lists);
+    }
+    
+    // 删除
+    public function delete()
+    {
+        $id = input('id');
+        $lists = db("topic")
+                ->where("id=$id")
+                ->delete();
+    }
+
+    public function info()
+    {
+        $id = input('id');
+        $info = db("topic")
+                ->where("id=$id")
+                ->find();
+        return json($info);
+    }
+}
