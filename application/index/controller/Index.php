@@ -17,7 +17,14 @@ class Index extends \think\Controller
     // 招聘
     public function job(){
     	if(empty(input('type'))){
-    		$job = db('job')->order('id desc')->limit(5)->select();
+    		$jobs = db('job')->order('id desc')->limit(5)->select();
+    		$job=[];
+
+    		foreach ( $jobs as $question ) {
+				 $squ = explode('市',  str_replace(',','', $question['address']));
+				 $question['address'] = str_replace('省', '-', $squ[0]);
+				$job [] = $question;
+			}
     	}else{
     		$job = db('job')->order('id desc')->select();
     	}

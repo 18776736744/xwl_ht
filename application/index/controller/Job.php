@@ -3,7 +3,7 @@ namespace app\index\controller;
 use think\Db;
 
 
-class Index extends \think\Controller
+class Job extends \think\Controller
 {
     public function index()
     {	
@@ -13,7 +13,6 @@ class Index extends \think\Controller
         $type = input('type');
         $id=input('id');
         $uid=input('uid');
-
         if ($type=='see') {
             if(!empty($id)){
             $ajob = db('job')->where('id='.$id)->select();
@@ -34,7 +33,8 @@ class Index extends \think\Controller
                                 }else{
                                     return "更新失败";
                                 }
-            }elseif ($type=='add') {
+            }
+        }else if ($type=='add') {
                 $insert=db('job')->update([
                                     'uid'=>$uid,
                                     'category'=>$category,
@@ -49,7 +49,6 @@ class Index extends \think\Controller
                     return "添加失败";
                 }
             }
-        }
         
     }
     

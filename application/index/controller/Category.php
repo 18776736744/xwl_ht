@@ -8,9 +8,11 @@ class Category extends \think\Controller
     public function index()
     {	
 
-        return $this->categoryName(0,100);
     }
-    public function categoryName($pid,$cid){
+    // 分类
+    public function categoryName(){
+    	$pid = input('pid');
+    	$cid = input('cid');
     	$catelist = db('category')
     	->where("pid= $pid")
     	->select();
