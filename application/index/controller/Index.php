@@ -12,7 +12,7 @@ class Index extends \think\Controller
 // 全部文章
     public function topic(){
     	$topData = db('topic')->order('id desc')->select();
-    	return json_encode($topData);
+    	return json($topData);
     }
     // 招聘
     public function job(){
@@ -21,7 +21,7 @@ class Index extends \think\Controller
     	}else{
     		$job = db('job')->order('id desc')->select();
     	}
-    	return json_encode($job);
+    	return json($job);
     }
-    
+
 }

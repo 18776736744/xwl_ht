@@ -15,11 +15,11 @@ class Category extends \think\Controller
                     ->field('t.*')->join('vertify v','v.type='.input('type'))
                     ->where("t.authorid=v.uid")
                     ->select();
-                    return json_encode($topData);
+                    return json($topData);
     }
     //我的文章
     public function myTopic(){
         $mytop = db('topic')->where("authorid=".input('authorid'))->select();
-        return json_encode($mytop);
+        return json($mytop);
     }
 }

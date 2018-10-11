@@ -14,7 +14,7 @@ class Category extends \think\Controller
     	$catelist = db('category')
     	->where("pid= $pid")
     	->select();
-    	return json_encode($catelist);
+    	return json($catelist);
     }
-    
+
 }
