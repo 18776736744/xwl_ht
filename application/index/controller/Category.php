@@ -13,6 +13,9 @@ class Category extends \think\Controller
     public function categoryName(){
     	$pid = input('pid');
     	$cid = input('cid');
+    	if(!empty($pid)){
+    		
+    	}
     	$catelist = db('category')
     	->where("pid= $pid")
     	->select();

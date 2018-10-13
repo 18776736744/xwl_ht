@@ -7,7 +7,7 @@ class Index extends \think\Controller
 {
     public function index()
     {	
-
+    	
     }
 // 全部文章
     public function topic(){
