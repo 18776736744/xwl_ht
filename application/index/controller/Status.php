@@ -7,10 +7,33 @@ use think\Db;
 class Status extends \think\Controller
 {
 	
-	
-	public function collect(){
-
+	// 获取我的收藏的文章
+	public function getcollect_wz(){
+		$type = input('type_');
+		$id = input('id');
+		$uid = input('uid');
+		$mysc = db('topic')->alias('t')->field("t.*")
+				->join('topic_likes l','l.uid='.$uid)
+				->where("t.id=".$id)->select();
+		if ($mysc) {
+			return json($mysc);
+		}else{
+			return json("2");
+		}
 	}
+	// 获取机构、教师类型招聘文章
+	public function wenzhanglist(){
+		$type = input('type_');
+		$sele=db('vertify')->alias('v')->field("t.id,t.title,t.description,t.image,t.author,t.authorid,t.views,t.articleclassid,t.viewtime,t.likes,t.artcles,t.price,t.ispc")
+		->join('topic t','t.uid=v.uid')
+		->where('type='.$type)->select();
+		if ($sele) {
+			return json($sele);
+		}else{
+			return json("2");
+		}
+	}
+	// 收藏关注
 	public function index(){
 		// $uid主ID，cid客ID，id类ID
 		$uid =input('uid');
@@ -35,7 +58,7 @@ class Status extends \think\Controller
 		}else if($type=='用户'){
 			return $this->follower_user($uid,$cid,$status,$sum);
 		}else if($type=='问题'){
-			return $this->follower_question($uid,$cid,$id,$status);
+			return $this->follower_question($uid,$cid,$status,$sum);
 		}else if($type=='话题'){
 			return $this->follower_topic($uid,$cid,$id,$status);
 		}else{
@@ -76,11 +99,36 @@ class Status extends \think\Controller
 			return json('2');
 		}
 	}
-	public function follower_article(){
+	public function follower_article($uid,$id,$status,$sum){
+		if($status=="1"){
+			$art= db('topic_likes')->insert(['uid'=>$uid,'tid'=>$id,'time'=>time()]);
+		}elseif ($status=="2") {
+			$art= db('topic_likes')->where(['uid'=>$uid,'tid'=>$id])->delete();
+		}
+		$addart =db('topic')->where('id='.$id)->update('likes'.$sum);
 
+		if($addart){
+			return json("1");
+		}else{
+			return json("2");
+		}
 	}
-	public function follower_question(){
-		
+	// 问题
+	public function follower_question($uid,$cid,$status,$sum){
+		if($status=='1'){
+			$que=db('favorite')->insert(['uid'=>$uid,'qid'=>$id,'time'=>time()]);
+			
+		}else{
+			$que=db('favorite')->where(['uid'=>$uid,'qid'=>$id])->delete();
+		}
+		if($que){
+			$queadd=db('question')->where('id='.$id)->update('attentions'.$sum);
+			if($queadd){
+				return json("1");
+			}else{
+				return json("2");
+			}
+		}
 	}
 	public function follower_topic(){
 		

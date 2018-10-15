@@ -31,6 +31,12 @@ class Job extends \think\Controller
         if ($type=='see') {
             if(!empty($id)){
                 $ajob = db('job')->where('id='.$id)->select();
+                foreach ( $ajobs as $question ) {
+                     $squ = explode('市',  str_replace(',','', $question['address']));
+                     $question['address'] = str_replace('省', '-', $squ[0]);
+                     $question['pub_time'] = date('Y-m-d',$question['pub_time']);
+                     $ajob [] = $question;
+                }
                 return json($ajob);
             }
         }else if($type=='update'){
