@@ -10,6 +10,7 @@ class Job extends \think\Controller
 
     }
     public function Ajob(){
+
         $data = [
                     'category'=>input('category'),
                     'classid'=>input('classid'),
@@ -22,6 +23,7 @@ class Job extends \think\Controller
                     'description'=>input('description'),
                     'has_shebao'=>input('has_shebao'),
                     'has_gjj'=>input('has_gjj'),
+                    'pub_time'=>time()
                 ];
         $type = input('type_');
         $id=input('id');
@@ -43,7 +45,7 @@ class Job extends \think\Controller
             }
         }else if ($type=='add') {
                 $data['uid']=$uid;
-                $insert=db('job')->update($data);
+                $insert=db('job')->insert($data);
                 if($insert){
                     return json("1");
                 }else{

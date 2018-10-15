@@ -76,4 +76,13 @@ class Status extends \think\Controller
 			return json('2');
 		}
 	}
+	public function follower_article(){
+
+	}
+	public function follower_question(){
+		
+	}
+	public function follower_topic(){
+		
+	}
 }
