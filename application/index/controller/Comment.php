@@ -11,18 +11,23 @@ class Comment extends \think\Controller{
 		$id = input('id');
 		$cid = input('cid');//被评论
 		$tid = input('tid');//一级评论对应二级id
+		$data=['a.authorid'=>$uid,'a.tid'=>$id,'a.aid'=>$cid];
 		if($type=='my'){
-			$filed = "t.id,t.title,t.description,t.image,t.views,t.articleclassid,t.viewtime,t.likes,t.articles,t.price,t.ispc,a.*";
+			// t.authorid与a.authorid冲突，设置输出一个
+			$sele_com = db('article_comment')->alias('a')
+			->field('t.id,t.title,t.describtion,t.image,t.views,t.articleclassid,t.viewtime,t.likes,t.articles,t.price,t.ispc,a.*,r.*')
+			->join('topic t','t.id='.$id)
+			->join('articlecomment r','r.tid='.$tid)
+			->where($data)->select();
 		}else if($type=='he'){
-			$field = "t.*,a.tid,a.content,a.time,a.aid";
+			$sele_com = db('article_comment')->alias('a')
+			->field('t.*,a.tid,a.content,a.time,a.aid,r.*')
+			->join('topic t','t.id='.$id)
+			->join('articlecomment r','r.tid='.$tid)
+			->where($data)->select();
 		}
-			$data=['a.authorid'=>$uid,'a.tid'=>$id,'a.aid'=>$cid];
 
-		$sele_com = db('article_comment')->alias('a')
-		->field('t.id,t.title,t.describtion,t.image,t.views,t.articleclassid,t.viewtime,t.likes,t.articles,t.price,t.ispc,a.*,r.*')
-		->join('topic t','t.id='.$id)
-		->join('articlecomment r','r.tid='.$tid)
-		->where($data)->select();
+		
 		if ($sele_com) {
 			return json($sele_com);
 		}else{
