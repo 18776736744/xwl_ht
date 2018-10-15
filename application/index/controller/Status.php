@@ -9,12 +9,10 @@ class Status extends \think\Controller
 	
 	// 获取我的收藏的文章
 	public function getcollect_wz(){
-		$type = input('type_');
-		$id = input('id');
 		$uid = input('uid');
 		$mysc = db('topic')->alias('t')->field("t.*")
 				->join('topic_likes l','l.uid='.$uid)
-				->where("t.id=".$id)->select();
+				->where("t.id=l.tid")->select();
 		if ($mysc) {
 			return json($mysc);
 		}else{
