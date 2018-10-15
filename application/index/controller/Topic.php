@@ -12,7 +12,7 @@ class Category extends \think\Controller
     // 获取发布文章
     public function topic_get(){
     	$topData = db('topic')->alias('t')
-                    ->field('t.*')->join('vertify v','v.type='.input('type'))
+                    ->field('t.*')->join('vertify v','v.type='.input('type_'))
                     ->where("t.authorid=v.uid")
                     ->select();
                     return json($topData);

@@ -10,9 +10,9 @@ class Status extends \think\Controller
 	// 获取我的收藏的文章
 	public function getcollect_wz(){
 		$uid = input('uid');
-		$mysc = db('topic')->alias('t')->field("t.*")
+		$mysc = db('topic')->alias('t')->field("t.id,t.title,t.description,t.image,t.author,t.authorid,t.views,t.articleclassid,t.viewtime,t.likes,t.artcles,t.price,t.ispc")
 				->join('topic_likes l','l.uid='.$uid)
-				->where("t.id=l.tid")->select();
+				->where("t.id=l.tid")->order('id desc')->select();
 		if ($mysc) {
 			return json($mysc);
 		}else{
@@ -24,7 +24,7 @@ class Status extends \think\Controller
 		$type = input('type_');
 		$sele=db('vertify')->alias('v')->field("t.id,t.title,t.description,t.image,t.author,t.authorid,t.views,t.articleclassid,t.viewtime,t.likes,t.artcles,t.price,t.ispc")
 		->join('topic t','t.uid=v.uid')
-		->where('type='.$type)->select();
+		->where('type='.$type)->order('id desc')->select();
 		if ($sele) {
 			return json($sele);
 		}else{
