@@ -138,6 +138,17 @@ class Comment extends \think\Controller{
 		$all[4]=$avg_hpl;
 		return json($all);
 	}
+	public function dp_add_comment(){
+		$plr = input('uid');
+		$pldx= input('cid');
+		$star= input('star');
+		$picture=input('picture');
+		$has_name=input('is_true_name');
+		$info= input('info');
+		if (!empty($picture)) {
+			# code...
+		}
+	}
 }
 
  ?>
