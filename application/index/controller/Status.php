@@ -6,6 +6,9 @@ use think\Db;
  */
 class Status extends \think\Controller
 {
+	public function status(){
+		$this->display();
+	}
 	
 	// 获取我的收藏的文章
 	public function getcollect_wz(){
@@ -24,12 +27,12 @@ class Status extends \think\Controller
 		$order = input('limit');
 		$limit="";
 		if ($order) {
-			$limit = "->limit(0 ".$order.")";
+			$limit = "0 ".$order;
 		}
 		$type = input('type_');
 		$sele=db('vertify')->alias('v')->field("t.id,t.title,t.description,t.image,t.author,t.authorid,t.views,t.articleclassid,t.viewtime,t.likes,t.artcles,t.price,t.ispc")
 		->join('topic t','t.uid=v.uid')
-		->where('type='.$type)->order('id desc').$limit.->select();
+		->where('type='.$type)->order('id desc')->limit($limit)->select();
 		if ($sele) {
 			return json($sele);
 		}else{
