@@ -5,11 +5,6 @@ use think\Db;
 
 class Comment extends \think\Controller{
 
-	public function comment(){
-
-		return $this->fetch();
-
-	}
 	public function index(){
 		$type=input('type_');
 		$uid = input('uid'); //我评论
@@ -21,11 +16,15 @@ class Comment extends \think\Controller{
 		}if($type=='1'||$type=='2'){
 			return $this->article_delete($type,$uid,$id,$cid,$tid);
 		}if($type=='addmy'||$type=='addhe'){
-			return $this->article_insert($type,$uid,$id,$cid,$tid);
+			// 评论别人评论的评论
+			$author = input('author');
+			$title = input('title');
+			$content =input('content');
+			return $this->article_insert($type,$uid,$id,$tid,$author,$title,$cid,$content);
 		}
 	}
 
-	// 获取对应文章评论数据 Tid==文章id
+	// 获取对应文章评论数据 Tid==文章id、、查看我的和他的 uid与cid对换
 	public function article_comment($type,$uid,$id){//type_ my,uid自己id,id=文章ID，cid被评论人id
 			$se = db('articlecomment')->field('id')->where('tid='.$id)->select();//查找一级评论id
 			// 返回的id是articlecomment里的
@@ -79,12 +78,35 @@ class Comment extends \think\Controller{
 			return json("2");
 		}
 	}
-	public function article_insert($type,$uid,$id,$cid,$tid){
+	// 增加
+	public function article_insert($type,$uid,$id,$tid,$author,$title,$cid,$content){
 		if($type=='addmy'){
-
+			$data=[
+					'tid'=>$id,'authorid'=>$uid,'author'=>$author,
+					'title'=>$title,'time'=>time(),'content'=>$content
+			]
+			$one_ment = db('articlecomment')->insert($data);
+			if ($one_ment) {
+				return json("1");
+			}else{
+				return json("2");
+			}
+		}else if ($type=='addhe') {
+			$two_seleID = db('articlecomment')->where(['tid'=>$tid,'authorid'=>$cid])->value('id');
+			$two_data = [
+							'tid'=>$id,'authorid'=>$uid,'author'=>$author,
+							'time'=>time(),'content'=>$content,'aid'=>$two_seleID
+						]
+			
+			if ($two_seleID) {
+				$two_add = db('article_comment')->where($two_data)->insert();
+				if ($two_add) {
+					$three_add=db('articlecomment')->(['tid'=>$tid,'authorid'=>$cid])->update('comments+1');
+				}
+			}
 		}
 	}
-	// 获取我点评过的,
+	// 获取我点评过的列表,
 	public function dp_comment(){
 		$type = input('type_');
 		$px='desc';
@@ -144,6 +166,7 @@ class Comment extends \think\Controller{
 		$all[4]=$avg_hpl;
 		return json($all);
 	}
+	// 添加点评
 	public function dp_add_comment(){
 		$plr = input('uid');
 		$pldx= input('cid');
@@ -151,25 +174,35 @@ class Comment extends \think\Controller{
 		$picture=input('picture');
 		$has_name=input('is_true_name');
 		$info= input('info');
-		if (!empty($picture)) {
+		$imgurl ="";
+		if(!empty($picture)){//为空就判断$file
 			$file = request()->file('picture');
-    		echo "进来了";
 		    // 移动到框架应用根目录/public/uploads/ 目录下
 		    if($file){
-		        $info = $file->move(ROOT_PATH . '../data/attach' . DS . 'commont');
+		        $info = $file->rule('uniqid')->move(ROOT_PATH . '../data/attach' . DS . 'commont');
 		        if($info){
-		            // 成功上传后 获取上传信息
-		            // 输出 jpg
-		            echo $info->getExtension();
-		            // 输出 20160820/42a79759f284b767dfcb2a0197904287.jpg
-		            echo $info->getSaveName();
-		            // 输出 42a79759f284b767dfcb2a0197904287.jpg
-		            echo $info->getFilename(); 
+		            $imgurl= "data/attach/commont/".$info->getFilename(); 
 		        }else{
 		            // 上传失败获取错误信息
 		            echo $file->getError();
 		        }
+
 		    }
+		}
+		$data =	[
+					'pldx'=>$pldx,
+					'plr' => $plr,
+					'add_time' =>time(),
+					'star' =>$star,
+					'picture' =>$imgurl,
+					'is_true_name' =>$has_name,
+					'info' =>$info
+				]
+		$insert = db('commont_list')->insert($data);
+		if ($insert) {
+			return json("1");
+		}else{
+			return json("2");
 		}
 	}
 }

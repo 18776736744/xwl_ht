@@ -22,4 +22,15 @@ class Category extends \think\Controller
         $mytop = db('topic')->where("authorid=".input('authorid'))->select();
         return json($mytop);
     }
+    // 获取文章详情
+    public function getTopic(){
+        $uid = input('uid');
+        $id = input('id');
+        $xxtop = db('topic')->field("id,title,describtion,image,author,authorid,views,articleclassid,viewtime,likes,articles,price,ispc")->where(['authorid'=>$uid,'id'=>$id])->select();
+        if ($xxtop) {
+            return json($xxtop);
+        }else{
+            return json("2");
+        }
+    }
 }

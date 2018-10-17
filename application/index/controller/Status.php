@@ -65,6 +65,8 @@ class Status extends \think\Controller
 			return $this->follower_question($uid,$cid,$status,$sum);
 		}else if($type=='话题'){
 			return $this->follower_topic($uid,$cid,$id,$status);
+		}else if($type=='点赞'){
+			return $this->follower_zan($uid,$cid,$id,$status,$sum);
 		}else{
 			return;
 		}
@@ -136,5 +138,27 @@ class Status extends \think\Controller
 	}
 	public function follower_topic(){
 		
+	}
+	// 点赞
+	public function follower_zan($uid,$cid,$id,$status,$sum){
+		$data=[
+				'authorid'=>$cid,
+				'tid'=>$id,
+				'cid'=>$uid
+				]
+		$pd =db('article_comzan')->where($data)->select();
+		if ($pd) {
+			return json("已点赞");
+		}else{
+			$zan=db('article_comzan')->where($data)->insert();
+			if ($zan) {
+				$editzan = db('articlecomment')->where(['authorid'=>$cid,'tid'=>$id])->update('supports'.$sum);
+				if ($editzan) {
+				return json("1");	
+				}else{
+					return json("2");
+				}
+			}
+		}
 	}
 }
