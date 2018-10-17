@@ -4,6 +4,12 @@ use think\Db;
 
 
 class Comment extends \think\Controller{
+
+	public function comment(){
+
+		return $this->fetch();
+
+	}
 	public function index(){
 		$type=input('type_');
 		$uid = input('uid'); //我评论
@@ -147,10 +153,10 @@ class Comment extends \think\Controller{
 		$info= input('info');
 		if (!empty($picture)) {
 			$file = request()->file('picture');
-    
+    		echo "进来了";
 		    // 移动到框架应用根目录/public/uploads/ 目录下
 		    if($file){
-		        $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
+		        $info = $file->move(ROOT_PATH . '../data/attach' . DS . 'commont');
 		        if($info){
 		            // 成功上传后 获取上传信息
 		            // 输出 jpg

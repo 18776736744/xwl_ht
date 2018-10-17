@@ -11,7 +11,12 @@ class Index extends \think\Controller
     }
 // 全部文章
     public function topic(){
-    	$topData = db('topic')->order('id desc')->select();
+        $type = input('type_');
+        if(!empty($type)){
+            $topData = db('topic')->order('id desc')->limit('0,5')->select();
+        }else{
+            $topData = db('topic')->order('id desc')->select();
+        }
     	return json($topData);
     }
     // 招聘
