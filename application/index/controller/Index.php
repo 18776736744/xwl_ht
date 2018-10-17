@@ -16,7 +16,7 @@ class Index extends \think\Controller
     }
     // 招聘
     public function job(){
-    	if(empty(input('type'))){
+    	if(empty(input('type_'))){
     		$jobs = db('job')->order('id desc')->limit(5)->select();
     		$job=[];
 

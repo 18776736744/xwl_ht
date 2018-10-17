@@ -30,7 +30,7 @@ class Job extends \think\Controller
         $uid=input('uid');
         if ($type=='see') {
             if(!empty($id)){
-                $ajob = db('job')->where('id='.$id)->select();
+                $ajobs = db('job')->where('id='.$id)->select();
                 foreach ( $ajobs as $question ) {
                      $squ = explode('市',  str_replace(',','', $question['address']));
                      $question['address'] = str_replace('省', '-', $squ[0]);
