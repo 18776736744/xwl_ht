@@ -145,7 +145,7 @@ class Status extends \think\Controller
 				'authorid'=>$cid,
 				'tid'=>$id,
 				'cid'=>$uid
-				]
+				];
 		$pd =db('article_comzan')->where($data)->select();
 		if ($pd) {
 			return json("已点赞");
