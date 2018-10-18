@@ -9,6 +9,7 @@ class Job extends \think\Controller
     {	
 
     }
+    // 招聘增删查改
     public function Ajob(){
 
         $data = [

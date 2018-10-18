@@ -3,7 +3,7 @@ namespace app\index\controller;
 use think\Db;
 
 
-class Category extends \think\Controller
+class Topic extends \think\Controller
 {
     public function index()
     {	
@@ -31,6 +31,16 @@ class Category extends \think\Controller
             return json($xxtop);
         }else{
             return json("2");
+        }
+    }
+    // 获取机构或教师总数量
+    public function count_topic(){
+        $type = input('type_');
+        if(!empty($type)){
+            $topCount = db('vertify')
+            ->where('type='.$type)
+            ->count();
+            return json($topCount);
         }
     }
 }
