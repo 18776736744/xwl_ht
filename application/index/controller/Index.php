@@ -22,7 +22,7 @@ class Index extends \think\Controller
     // 招聘
     public function job(){
     	if(empty(input('type_'))){
-    		$jobs = db('job')->order('id desc')->limit(5)->select();
+    		$jobs = db('job')->order('id desc')->limit(0,5)->select();
     		$job=[];
 
     		foreach ( $jobs as $question ) {
@@ -32,14 +32,12 @@ class Index extends \think\Controller
 				$job [] = $question;
 			}
     	}else{
-    		$jobs = db('job')->order('id desc')->paginate(5);
-    		$job=[];
-    		foreach ( $jobs as $question ) {
-				 $squ = explode('市',  str_replace(',','', $question['address']));
-				 $question['address'] = str_replace('省', '-', $squ[0]);
-				 $question['pub_time'] = date('Y-m-d',$question['pub_time']);
-				$job [] = $question;
-			}
+    		$job = db('job')->order('id desc')->paginate(6)->each(function($item, $key){
+     
+            $squ = explode('市',  str_replace(',','', $item['address']));
+                     $item['address'] = str_replace('省', '-', $squ[0]);
+                     $item['pub_time'] = date('Y-m-d',$item['pub_time']);
+            return $item;
     	}
     	return json($job);
     }
