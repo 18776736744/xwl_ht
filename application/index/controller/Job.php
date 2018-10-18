@@ -61,8 +61,15 @@ class Job extends \think\Controller
         }else if($type=='my'){
             if(!empty($uid)){
                 $mytop = db('job')->where('uid='.$uid)->order('id desc')->select();
+                $job=[];
+                foreach ( $mytop as $question ) {
+                     $squ = explode('市',  str_replace(',','', $question['address']));
+                     $question['address'] = str_replace('省', '-', $squ[0]);
+                     $question['pub_time'] = date('Y-m-d',$question['pub_time']);
+                    $job [] = $question;
+                }
                 if($mytop){
-                    return json($mytop);
+                    return json($job);
                 }else{
                     return json("2");
                 }

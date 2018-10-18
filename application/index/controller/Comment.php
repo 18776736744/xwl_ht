@@ -152,7 +152,7 @@ class Comment extends \think\Controller{
 		if(count($dxid)>1){
 			foreach ($dxid as $key => $value) {
 				$data[$key]=db('user')
-				->field('username,uid')
+				->field('username,uid,tximg')
 				->where('uid='.$value['plr'])->select();
 			}
 		}else{

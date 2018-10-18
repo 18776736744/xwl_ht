@@ -32,7 +32,7 @@ class Index extends \think\Controller
 				$job [] = $question;
 			}
     	}else{
-    		$jobs = db('job')->order('id desc')->select();
+    		$jobs = db('job')->order('id desc')->paginate(5);
     		$job=[];
     		foreach ( $jobs as $question ) {
 				 $squ = explode('市',  str_replace(',','', $question['address']));
