@@ -84,7 +84,7 @@ class Comment extends \think\Controller{
 			$data=[
 					'tid'=>$id,'authorid'=>$uid,'author'=>$author,
 					'title'=>$title,'time'=>time(),'content'=>$content
-			]
+			];
 			$one_ment = db('articlecomment')->insert($data);
 			if ($one_ment) {
 				return json("1");
@@ -96,12 +96,12 @@ class Comment extends \think\Controller{
 			$two_data = [
 							'tid'=>$id,'authorid'=>$uid,'author'=>$author,
 							'time'=>time(),'content'=>$content,'aid'=>$two_seleID
-						]
+						];
 			
 			if ($two_seleID) {
 				$two_add = db('article_comment')->where($two_data)->insert();
 				if ($two_add) {
-					$three_add=db('articlecomment')->(['tid'=>$tid,'authorid'=>$cid])->update('comments+1');
+					$three_add=db('articlecomment')->where(['tid'=>$tid,'authorid'=>$cid])->update('comments+1');
 				}
 			}
 		}
@@ -197,7 +197,7 @@ class Comment extends \think\Controller{
 					'picture' =>$imgurl,
 					'is_true_name' =>$has_name,
 					'info' =>$info
-				]
+				];
 		$insert = db('commont_list')->insert($data);
 		if ($insert) {
 			return json("1");
