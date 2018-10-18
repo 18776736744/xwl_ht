@@ -40,8 +40,6 @@ class Tximg extends \think\Controller{
         //读取文件中的内容判断是文件还是文件夹
         while(($file = readdir($handle))!=false)
         {
-        	// print_r($file);exit();
-        	// $files[] = $file;
             if($file != '..' && $file != '.')
             {
                 //继续遍历文件夹下的子文件夹 注意路径

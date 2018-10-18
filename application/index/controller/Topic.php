@@ -24,9 +24,12 @@ class Topic extends \think\Controller
     }
     // 获取文章详情
     public function getTopic(){
-        $uid = input('uid');
         $id = input('id');
-        $xxtop = db('topic')->field("id,title,describtion,image,author,authorid,views,articleclassid,viewtime,likes,articles,price,ispc")->where(['authorid'=>$uid,'id'=>$id])->select();
+        $xxtops = db('topic')->field("id,title,describtion,image,author,authorid,views,articleclassid,viewtime,likes,articles,price,ispc")->where('id'=>$id)->select();
+        foreach ( $xxtops as $question ) {
+                $question['viewtime'] = date('Y-m-d',$question['viewtime']);
+                $xxtop[] = $question;
+            }
         if ($xxtop) {
             return json($xxtop);
         }else{
