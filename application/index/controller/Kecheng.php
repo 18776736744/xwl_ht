@@ -37,13 +37,27 @@ class Kecheng extends \think\Controller
     // 获取列表
     public function lists()
     {
+        $id=input('id');
         $uid = input('uid');
-
-        $lists = db("kecheng")
+        if (!empty($uid)) {
+            # code...
+            $lists = db("kecheng")
                 ->where("uid=$uid")
                 ->field("kecheng_name title,id,add_time viewtime,start_time,money")
                 ->order('id desc')
                 ->select();
+        }else if(!empty($uid)&&!empty($id)){
+            $lists = db("kecheng")
+                ->where(['id'=>$id,'uid'=>$uid])
+                ->field("kecheng_name title,id,add_time viewtime,start_time,money")
+                ->order('id desc')
+                ->select();
+        }else{
+            $lists = db("kecheng")
+                ->field("kecheng_name title,id,add_time viewtime,start_time,money")
+                ->order('id desc')
+                ->select();
+        }
         return json($lists);
     }
     // 删除

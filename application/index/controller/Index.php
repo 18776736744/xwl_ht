@@ -38,7 +38,8 @@ class Index extends \think\Controller
                      $item['address'] = str_replace('省', '-', $squ[0]);
                      $item['pub_time'] = date('Y-m-d',$item['pub_time']);
             return $item;
-    	}
+    	    )};
+        }
     	return json($job);
     }
 

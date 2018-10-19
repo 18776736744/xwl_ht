@@ -17,9 +17,21 @@ class Category extends \think\Controller
     	$catelist = db('category')->alias('c')
     	->field("t.title,t.describtion,t.image,t.views,t.articleclassid,t.viewtime,t.likes,t.articles,t.price,t.ispc,t.tximg")
     	->join('topic t','articleclassid='.$id)
-    	->where("pid= $id")
+    	->where("id= $id")
     	->select();
     	return json($catelist);
+    }
+
+    public function getlist(){
+    	$type = input('type_');
+    	$grade = input('grade');
+    	$pid=input('pid');
+    	if ($type=='load') {
+    		$list=db('category')->field("id,pid,name")->where(['pid'=>'0','grade'=>$grade])->select();
+    	}else if($type=='level'){
+    		$list=db('category')->field("id,pid,name")->where(['pid'=>$pid,'grade'=>$grade])->select();
+    	}
+    	return json($list);
     }
 
 }
