@@ -15,7 +15,7 @@ class Index extends \think\Controller
         if(!empty($type)){
             $topData = db('topic')->order('id desc')->limit('0,5')->select();
         }else{
-            $topData = db('topic')->order('id desc')->select();
+            $topData = db('topic')->order('id desc')->paginate(6);
         }
     	return json($topData);
     }
@@ -38,8 +38,9 @@ class Index extends \think\Controller
                      $item['address'] = str_replace('省', '-', $squ[0]);
                      $item['pub_time'] = date('Y-m-d',$item['pub_time']);
             return $item;
-    	}
-    	return json($job);
-    }
-
+    	           });
+    	
+             }
+			return json($job);
+	     }
 }
