@@ -11,7 +11,7 @@ class Status extends \think\Controller
 	// 获取我的收藏的文章
 	public function getcollect_wz(){
 		$uid = input('uid');
-		$mysc = db('topic')->alias('t')->field("t.id,t.title,t.describtion,t.image,t.author,t.authorid,t.views,t.articleclassid,t.viewtime,t.likes,t.articles,t.price,t.ispc")
+		$mysc = db('topic')->alias('t')->field("t.id,t.title,t.describtion,t.image,t.author,t.authorid,t.views,t.articleclassid,t.viewtime,t.likes,t.articles,t.price,t.ispc,t.tximg")
 				->join('topic_likes l','l.uid='.$uid)
 				->where("t.id=l.tid")->order('id desc')->select();
 		if ($mysc) {
@@ -28,7 +28,7 @@ class Status extends \think\Controller
 			$limit = "0,".$order;
 		}
 		$type = input('type_');
-		$sele=db('vertify')->alias('v')->field("t.id,t.title,t.describtion,t.image,t.author,t.authorid,t.views,t.articleclassid,t.viewtime,t.likes,t.articles,t.price,t.ispc")
+		$sele=db('vertify')->alias('v')->field("t.id,t.title,t.describtion,t.image,t.author,t.authorid,t.views,t.articleclassid,t.viewtime,t.likes,t.articles,t.price,t.ispc,t.tximg")
 		->join('topic t','t.authorid=v.uid')
 		->where('type='.$type)->order('id desc')->limit($limit)->select();
 		if ($sele) {

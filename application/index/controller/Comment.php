@@ -30,7 +30,7 @@ class Comment extends \think\Controller{
 			// 返回的id是articlecomment里的
 			// t.authorid与a.authorid冲突，设置输出一个
 			$sele_one=db('topic')->alias('a')
-						->field("a.title,a.describtion,a.image,a.views,a.articleclassid,a.viewtime,a.likes,a.articles,a.price,a.ispc,r.id,r.tid,r.title,r.authorid,r.author,r.time,r.content,r.comments")
+						->field("a.title,a.describtion,a.image,a.views,a.articleclassid,a.viewtime,a.likes,a.articles,a.price,a.ispc,a.tximg,r.id,r.tid,r.title,r.authorid,r.author,r.time,r.content,r.comments")
 						->join('articlecomment r','tid='.$id)
 						->where(['a.authorid'=>$uid,'a.id'=>$id])->select();
 						$sele_two=array();

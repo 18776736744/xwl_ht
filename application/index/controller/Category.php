@@ -9,15 +9,15 @@ class Category extends \think\Controller
     {	
 
     }
-    // 分类
-    public function categoryName(){
-    	$pid = input('pid');
-    	$cid = input('cid');
-    	if(!empty($pid)){
-    		
-    	}
-    	$catelist = db('category')
-    	->where("pid= $pid")
+    // 分类下一级
+    public function category_list(){
+    	$id = input('id');
+    	$grade = input('grade');
+
+    	$catelist = db('category')->alias('c')
+    	->field("t.title,t.describtion,t.image,t.views,t.articleclassid,t.viewtime,t.likes,t.articles,t.price,t.ispc,t.tximg")
+    	->join('topic t','articleclassid='.$id)
+    	->where("pid= $id")
     	->select();
     	return json($catelist);
     }
