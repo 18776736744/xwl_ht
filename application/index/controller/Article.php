@@ -20,7 +20,7 @@ class Article extends \think\Controller
         if ($t == 'edit') {
             $id = db('topic')->where("id=$id")->update([
                 'title'=>input('title'),
-                'articleclassid'=>input('articleclassid'),
+                'articleclassid'=>input('atid'),
             ]);
         }else{
             $uname = db("user")->where("uid=$uid")->value("username");
@@ -28,7 +28,7 @@ class Article extends \think\Controller
                 'authorid'=>$uid,
                 'author'=>$uname,
                 'title'=>input('title'),
-                'articleclassid'=>input('articleclassid'),
+                'articleclassid'=>input('atid'),
                 'views'=>1,
                 'isphone'=>1,
                 'viewtime'=>time(),
