@@ -141,24 +141,24 @@ class Status extends \think\Controller
 	}
 	// 点赞
 	public function follower_zan($uid,$cid,$id,$status,$sum){
-		$data=[
-				'authorid'=>$cid,
-				'tid'=>$id,
-				'cid'=>$uid
-				];
-		$pd =db('article_comzan')->where($data)->select();
-		if ($pd) {
-			return json("已点赞");
-		}else{
-			$zan=db('article_comzan')->where($data)->insert();
-			if ($zan) {
+		// $data=[
+		// 		'authorid'=>$cid,
+		// 		'tid'=>$id,
+		// 		'cid'=>$uid
+		// 		];
+		// $pd =db('articlecomment')->where($data)->select();
+		// if ($pd) {
+		// 	return json("已点赞");
+		// }else{
+			// $zan=db('article_comzan')->where($data)->insert();
+			// if ($zan) {
 				$editzan = db('articlecomment')->where(['authorid'=>$cid,'tid'=>$id])->update('supports'.$sum);
 				if ($editzan) {
 				return json("1");	
 				}else{
 					return json("2");
 				}
-			}
-		}
+			// }
+		// }
 	}
 }
