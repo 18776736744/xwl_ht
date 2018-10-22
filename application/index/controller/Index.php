@@ -47,11 +47,12 @@ class Index extends \think\Controller
         $file = request()->file('image');
         
         // 移动到框架应用根目录/public/uploads/ 目录下
+        // 
         if($file){
             $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
             if($info){
 
-                $img= $info->getSaveName();
+              echo  $img=  '/uploads/'.str_replace("\\", "/",$info->getSaveName());exit();
                 
             }else{
                 // 上传失败获取错误信息
