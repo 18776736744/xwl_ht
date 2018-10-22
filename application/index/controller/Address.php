@@ -7,7 +7,7 @@ use think\Db;
 class Address extends \think\Controller
 {
 
-	
+	// 获取地区
 	public function getmap(){
 		$upid=input('up_id');
 		$level = input('level');

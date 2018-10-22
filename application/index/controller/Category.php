@@ -21,13 +21,15 @@ class Category extends \think\Controller
     	->select();
     	return json($catelist);
     }
-
+    // 获取分类
     public function getlist(){
     	$type = input('type_');
     	$grade = input('grade');
     	$pid=input('pid');
+        // 第一次加载获取的分类
     	if ($type=='load') {
     		$list=db('category')->field("id,pid,name")->where(['pid'=>'0','grade'=>$grade])->select();
+        // 选择对应分类
     	}else if($type=='level'){
     		$list=db('category')->field("id,pid,name")->where(['pid'=>$pid,'grade'=>$grade])->select();
     	}
