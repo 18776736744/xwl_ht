@@ -58,7 +58,7 @@ class Status extends \think\Controller
 				break;
 		}
 		if($type=='文章'){
-			return $this->follower_article($uid,$cid,$id,$status);
+			return $this->follower_article($uid,$cid,$id,$status,$tid);
 		}else if($type=='用户'){
 			return $this->follower_user($uid,$cid,$status,$sum);
 		}else if($type=='问题'){
@@ -105,11 +105,20 @@ class Status extends \think\Controller
 			return json('2');
 		}
 	}
-	public function follower_article($uid,$id,$status,$sum){
+	public function follower_article($uid,$id,$status,$sum,$cid){
+		$sele = db('topic_likes')->where(['uid'=>$uid,'cid'=>$cid,'tid'=>$tid])->select();
+		
 		if($status=="1"){
-			$art= db('topic_likes')->insert(['uid'=>$uid,'tid'=>$id,'time'=>time()]);
+				$art= db('topic_likes')->insert(['uid'=>$uid,'tid'=>$id,'time'=>time()]);
+
 		}elseif ($status=="2") {
 			$art= db('topic_likes')->where(['uid'=>$uid,'tid'=>$id])->delete();
+		}elseif($status=="3"){
+			if($sele){
+				return json("1");
+			}else{
+				return json('2');
+			}
 		}
 		$addart =db('topic')->where('id='.$id)->update('likes'.$sum);
 
@@ -141,24 +150,24 @@ class Status extends \think\Controller
 	}
 	// 点赞
 	public function follower_zan($uid,$cid,$id,$status,$sum){
-		// $data=[
-		// 		'authorid'=>$cid,
-		// 		'tid'=>$id,
-		// 		'cid'=>$uid
-		// 		];
-		// $pd =db('articlecomment')->where($data)->select();
-		// if ($pd) {
-		// 	return json("已点赞");
-		// }else{
-			// $zan=db('article_comzan')->where($data)->insert();
-			// if ($zan) {
+		$data=[
+				'authorid'=>$cid,
+				'tid'=>$id,
+				'cid'=>$uid
+				];
+		$pd =db('articlecomment')->where($data)->select();
+		if ($pd) {
+			return json("已点赞");
+		}else{
+			$zan=db('articlecomment')->where($data)->insert();
+			if ($zan) {
 				$editzan = db('articlecomment')->where(['authorid'=>$cid,'tid'=>$id])->update('supports'.$sum);
 				if ($editzan) {
 				return json("1");	
 				}else{
 					return json("2");
 				}
-			// }
-		// }
+			}
+		}
 	}
 }
