@@ -43,6 +43,7 @@ class Status extends \think\Controller
 		$uid =input('uid');
 		$cid =input('cid');
 		$id  =input('id');
+		$tid = input('tid');
 		$type= input('type_');
 		$status = input('status');
 		switch ($status) {
@@ -58,7 +59,7 @@ class Status extends \think\Controller
 				break;
 		}
 		if($type=='文章'){
-			return $this->follower_article($uid,$cid,$id,$status,$tid);
+			return $this->follower_article($uid,$id,$status,$sum);
 		}else if($type=='用户'){
 			return $this->follower_user($uid,$cid,$status,$sum);
 		}else if($type=='问题'){
@@ -105,23 +106,20 @@ class Status extends \think\Controller
 			return json('2');
 		}
 	}
-	public function follower_article($uid,$id,$status,$sum,$cid){
-		$sele = db('topic_likes')->where(['uid'=>$uid,'cid'=>$cid,'tid'=>$tid])->select();
-		
+	public function follower_article($uid,$id,$status,$sum){
 		if($status=="1"){
-				$art= db('topic_likes')->insert(['uid'=>$uid,'tid'=>$id,'time'=>time()]);
-
+			$art= db('topic_likes')->insert(['uid'=>$uid,'tid'=>$id,'time'=>time()]);
 		}elseif ($status=="2") {
 			$art= db('topic_likes')->where(['uid'=>$uid,'tid'=>$id])->delete();
 		}elseif($status=="3"){
-			if($sele){
-				return json("1");
-			}else{
-				return json('2');
-			}
+			$sele = db('topic_likes')->where(['uid'=>$uid,'tid'=>$id])->select();
+				if($sele){
+					return json("1");
+				}else{
+					return json('2');
+				}
 		}
-		$addart =db('topic')->where('id='.$id)->update('likes'.$sum);
-
+		$addart =db('topic')->where('id='.$id)->update(['likes'=>Db::raw('likes'.$sum)]);
 		if($addart){
 			return json("1");
 		}else{
@@ -137,7 +135,7 @@ class Status extends \think\Controller
 			$que=db('favorite')->where(['uid'=>$uid,'qid'=>$id])->delete();
 		}
 		if($que){
-			$queadd=db('question')->where('id='.$id)->update('attentions'.$sum);
+			$queadd=db('question')->where('id='.$id)->update(['attentions'=>Db::raw('attentions'.$sum)]);
 			if($queadd){
 				return json("1");
 			}else{
@@ -161,7 +159,7 @@ class Status extends \think\Controller
 		}else{
 			$zan=db('articlecomment')->where($data)->insert();
 			if ($zan) {
-				$editzan = db('articlecomment')->where(['authorid'=>$cid,'tid'=>$id])->update('supports'.$sum);
+				$editzan = db('articlecomment')->where(['authorid'=>$cid,'tid'=>$id])->update(['supports'=>Db::raw('supports'.$sum)]);
 				if ($editzan) {
 				return json("1");	
 				}else{
