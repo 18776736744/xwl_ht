@@ -8,7 +8,8 @@ class Article extends \think\Controller
     // 上传图片
     public function uploadImg()
     {	
-        return saveImg('image');   
+        return saveImg('image');  
+		 
     }
 
     // 保存文章

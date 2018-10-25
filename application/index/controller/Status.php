@@ -41,14 +41,15 @@ class Status extends \think\Controller
 	public function index(){
 		// $uid主ID，cid客ID，id类ID
 		$uid =input('uid');
-		$cid =input('cid');
 		$id  =input('id');
 		$type= input('type_');
 		$status = input('status');
+		$sum = "+0";
+
+		
 		switch ($status) {
 			case '1':	
 				$sum="+1";
-
 				break;
 			case '2':
 				$sum="-1";
@@ -58,7 +59,7 @@ class Status extends \think\Controller
 				break;
 		}
 		if($type=='文章'){
-			return $this->follower_article($uid,$cid,$id,$status);
+			return $this->follower_article($uid,$id,$status,$sum);
 		}else if($type=='用户'){
 			return $this->follower_user($uid,$cid,$status,$sum);
 		}else if($type=='问题'){
@@ -105,19 +106,30 @@ class Status extends \think\Controller
 			return json('2');
 		}
 	}
+	//文章                                               
 	public function follower_article($uid,$id,$status,$sum){
-		if($status=="1"){
-			$art= db('topic_likes')->insert(['uid'=>$uid,'tid'=>$id,'time'=>time()]);
-		}elseif ($status=="2") {
-			$art= db('topic_likes')->where(['uid'=>$uid,'tid'=>$id])->delete();
-		}
-		$addart =db('topic')->where('id='.$id)->update('likes'.$sum);
 
-		if($addart){
-			return json("1");
-		}else{
-			return json("2");
+		if($status=="1"){
+				$art= db('topic_likes')->insert(['uid'=>$uid,'tid'=>$id,'time'=>time()]);
 		}
+		else if ($status=="2") {
+			$art= db('topic_likes')->where(['uid'=>$uid,'tid'=>$id])->delete();
+			
+		}else if($status=="3"){
+			$sele = db('topic_likes')->where(['uid'=>$uid,'tid'=>$id])->select();
+			if($sele){
+				return json("2");
+			}else{
+				return json('1');
+			}
+		}
+		$addart =db('topic')->where(['id'=>$id])->update(['likes'=>Db::raw('likes'.$sum)]);
+			if($addart&&$sum){
+				return json("1");
+			}else{
+				return json("2");
+			}
+		
 	}
 	// 问题
 	public function follower_question($uid,$cid,$status,$sum){
@@ -146,11 +158,11 @@ class Status extends \think\Controller
 				'tid'=>$id,
 				'cid'=>$uid
 				];
-		$pd =db('article_comzan')->where($data)->select();
+		$pd =db('articlecomment')->where($data)->select();
 		if ($pd) {
 			return json("已点赞");
 		}else{
-			$zan=db('article_comzan')->where($data)->insert();
+			$zan=db('articlecomment')->where($data)->insert();
 			if ($zan) {
 				$editzan = db('articlecomment')->where(['authorid'=>$cid,'tid'=>$id])->update('supports'.$sum);
 				if ($editzan) {

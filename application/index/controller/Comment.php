@@ -6,12 +6,13 @@ use think\Db;
 class Comment extends \think\Controller{
 
 	public function index(){
+		// uid统一是第一视角id
 		$type=input('type_');
 		$uid = input('uid'); //我评论
-		$id = input('id');
+		$id = input('id');//文章id
 		$cid = input('cid');//被评论
 		$tid = input('tid');//一级评论对应二级id
-		if($type=='my'||$type=='he'){
+		if($type=='my'||$type=='he'){//查看自己的文章的评论和他的文章评论
 			return $this->article_comment($type,$uid,$id,$cid,$tid);
 		}if($type=='1'||$type=='2'){
 			return $this->article_delete($type,$uid,$id,$cid,$tid);
@@ -26,9 +27,9 @@ class Comment extends \think\Controller{
 
 	// 获取对应文章评论数据 Tid==文章id、、查看我的和他的 uid与cid对换
 	public function article_comment($type,$uid,$id){//type_ my,uid自己id,id=文章ID，cid被评论人id
-			$se = db('articlecomment')->field('id')->where('tid='.$id)->select();//查找一级评论id
 			// 返回的id是articlecomment里的
-			// t.authorid与a.authorid冲突，设置输出一个
+			$se = db('articlecomment')->field('id')->where('tid='.$id)->select();//查找一级评论id
+			// t.authorid与a.authorid冲突，设置输出一个，不要自己的id
 			$sele_one=db('topic')->alias('a')
 						->field("a.title,a.describtion,a.image,a.views,a.articleclassid,a.viewtime,a.likes,a.articles,a.price,a.ispc,a.tximg,r.id,r.tid,r.title,r.authorid,r.author,r.time,r.content,r.comments")
 						->join('articlecomment r','tid='.$id)
@@ -49,11 +50,6 @@ class Comment extends \think\Controller{
 	}
 	// 删除评论
 	public function comment_delete($type,$uid,$id,$cid,$tid){
-		// $type=input('type_');
-		// $uid=input('uid');
-		// $cid=input('cid');
-		// $tid=input('tid');//文章id
-		// $id = input('id');//一级对应二级id
 		if($type=='2'){//2==删除自己评论别人的评论 二级评论
 			$del=db('article_comment')->where(['authorid'=>$uid,'id'=>$id])->delete();
 			if($del){
@@ -78,8 +74,9 @@ class Comment extends \think\Controller{
 			return json("2");
 		}
 	}
-	// 增加
+	// 添加评论  
 	public function article_insert($type,$uid,$id,$tid,$author,$title,$cid,$content){
+		// 一级评论
 		if($type=='addmy'){
 			$data=[
 					'tid'=>$id,'authorid'=>$uid,'author'=>$author,
@@ -91,6 +88,7 @@ class Comment extends \think\Controller{
 			}else{
 				return json("2");
 			}
+			// 二级评论
 		}else if ($type=='addhe') {
 			$two_seleID = db('articlecomment')->where(['tid'=>$tid,'authorid'=>$cid])->value('id');
 			$two_data = [
