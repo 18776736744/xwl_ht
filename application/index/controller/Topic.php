@@ -29,6 +29,7 @@ class Topic extends \think\Controller
         foreach ( $xxtops as $question ) {
                 $question['viewtime'] = date('Y-m-d',$question['viewtime']);
                 $xxtop[] = $question;
+				
             }
         if ($xxtop) {
             return json($xxtop);

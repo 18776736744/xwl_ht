@@ -41,20 +41,22 @@ class Status extends \think\Controller
 	public function index(){
 		// $uid主ID，cid客ID，id类ID
 		$uid =input('uid');
+		$cid =input('cid');
 		$id  =input('id');
+		$tid = input('tid');
 		$type= input('type_');
 		$status = input('status');
-		$sum = "+0";
-
 		
 		switch ($status) {
 			case '1':	
 				$sum="+1";
+
 				break;
 			case '2':
 				$sum="-1";
 				break;
 			default:
+				$sum='';
 				# code...
 				break;
 		}
@@ -67,7 +69,7 @@ class Status extends \think\Controller
 		}else if($type=='话题'){
 			return $this->follower_topic($uid,$cid,$id,$status);
 		}else if($type=='点赞'){
-			return $this->follower_zan($uid,$cid,$id,$status,$sum);
+			return $this->follower_zan($uid,$cid,$id,$status,$sum,$tid);
 		}else{
 			return;
 		}
@@ -106,30 +108,26 @@ class Status extends \think\Controller
 			return json('2');
 		}
 	}
-	//文章                                               
 	public function follower_article($uid,$id,$status,$sum){
-
 		if($status=="1"){
-				$art= db('topic_likes')->insert(['uid'=>$uid,'tid'=>$id,'time'=>time()]);
-		}
-		else if ($status=="2") {
+			$art= db('topic_likes')->insert(['uid'=>$uid,'tid'=>$id,'time'=>time()]);
+		}elseif ($status=="2") {
 			$art= db('topic_likes')->where(['uid'=>$uid,'tid'=>$id])->delete();
-			
-		}else if($status=="3"){
-			$sele = db('topic_likes')->where(['uid'=>$uid,'tid'=>$id])->select();
-			if($sele){
-				return json("2");
-			}else{
-				return json('1');
-			}
 		}
-		$addart =db('topic')->where(['id'=>$id])->update(['likes'=>Db::raw('likes'.$sum)]);
-			if($addart&&$sum){
-				return json("1");
-			}else{
-				return json("2");
-			}
-		
+		elseif($status=="3"){
+			$sele = db('topic_likes')->where(['uid'=>$uid,'tid'=>$id])->select();
+				if($sele){
+					return json("1");
+				}else{
+					return json('2');
+				}
+		}
+		$addart =db('topic')->where('id='.$id)->update(['likes'=>Db::raw('likes'.$sum)]);
+		if($addart){
+			return json("1");
+		}else{
+			return json("2");
+		}
 	}
 	// 问题
 	public function follower_question($uid,$cid,$status,$sum){
@@ -140,7 +138,7 @@ class Status extends \think\Controller
 			$que=db('favorite')->where(['uid'=>$uid,'qid'=>$id])->delete();
 		}
 		if($que){
-			$queadd=db('question')->where('id='.$id)->update('attentions'.$sum);
+			$queadd=db('question')->where('id='.$id)->update(['attentions'=>Db::raw('attentions'.$sum)]);
 			if($queadd){
 				return json("1");
 			}else{
@@ -152,25 +150,83 @@ class Status extends \think\Controller
 		
 	}
 	// 点赞
-	public function follower_zan($uid,$cid,$id,$status,$sum){
+	public function follower_zan($uid,$cid,$id,$status,$sum,$tid){
 		$data=[
 				'authorid'=>$cid,
-				'tid'=>$id,
-				'cid'=>$uid
+				'tid'=>$tid,
+				'cid'=>$uid,
+				'id'=>$id
 				];
-		$pd =db('articlecomment')->where($data)->select();
+		$pd =db('article_comzan')->where($data)->select();
 		if ($pd) {
 			return json("已点赞");
 		}else{
-			$zan=db('articlecomment')->where($data)->insert();
+			$zan=db('article_comzan')->where($data)->insert();
 			if ($zan) {
-				$editzan = db('articlecomment')->where(['authorid'=>$cid,'tid'=>$id])->update('supports'.$sum);
+				$editzan = db('articlecomment')->where(['authorid'=>$cid,'tid'=>$tid,'id'=>$id])->update(['supports'=>Db::raw('supports'.$sum)]);
 				if ($editzan) {
-				return json("1");	
+					return json("1");	
 				}else{
 					return json("2");
 				}
 			}
 		}
 	}
+	
+	
+	
+	public function dianzan(){       //点赞
+		  $tid=input("tid");          //文章id
+		  $authorid=input('authorid');  // 评论人的id
+		  $cid=input('cid');          //我的id
+		$ck=db('article_comzan')->where(["tid"=>$tid,"authorid"=>$authorid,"cid"=>$cid])->find(); 
+		if($ck){
+			return json("1");
+		}
+		else{
+		 $bcdz=db('article_comzan')->insert(["tid"=>$tid,"authorid"=>$authorid,"cid"=>$cid]);
+			if($bcdz){
+			$editzan = db('articlecomment')->where("id=$authorid")->setInc("supports");
+				return json("2");
+			}
+		}
+		
+		
+		
+	}
+	 public function Collection(){   //收藏  ----
+	 	   $uid=input('uid');  //我的id
+	 	   $tid=input('tid');  //文章id
+	 	   $time=time();
+		   
+		   $list=db('topic_likes')->where(["uid"=>$uid,"tid"=>$tid])->find(); 
+		   if($list){
+			  db('topic_likes')->where(["uid"=>$uid,"tid"=>$tid])->delete(); 
+			  db("topic")->where("id=$tid")->setDec("likes");
+			  return json("1");
+		   }
+		   else{
+		   	 $cr_list=db('topic_likes')->insert(["uid"=>$uid,"tid"=>$tid,"time"=>$time,]);
+			 db("topic")->where("id=$tid")->setInc("likes");
+			 return json("2");
+			  
+			 
+		   }
+	 }
+	 public function Collection_two(){  //进来判断收藏
+	 	   $uid=input('uid');  //我的id
+	 	   $tid=input('tid');  //文章id
+	 	   $time=time();
+		   
+		   $list=db('topic_likes')->where(["uid"=>$uid,"tid"=>$tid])->find(); 
+		   if($list){
+			  return json("1");
+		   }
+		   else{
+			 return json("2");
+			  
+			 
+		   }
+	 }
+
 }

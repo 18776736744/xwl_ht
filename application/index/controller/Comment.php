@@ -4,7 +4,61 @@ use think\Db;
 
 
 class Comment extends \think\Controller{
-
+     public function one_bc(){     //保存一级评论
+          $tid= input('tid');//文章的id
+          $title=input('title'); //文章标题
+          $author = input('author'); //文章的人
+		  $authorid = input('authorid');//评论的人	
+		  $content=input('content');   //评论内容
+          $list=db('articlecomment')->insertGetId([
+          'tid'=>$tid,
+         'authorid'=>$authorid,
+         'author'=>$author,
+		 'title'=>$title,
+		 'time'=>time(),
+		 'content'=>$content]);
+		 
+		 return json(['content'=>$content,'authorid'=>$authorid,'supports'=>"0",'tid'=>$tid,'id'=>$list]);
+     }
+	 public function one_pl(){    //查询一级评论
+	 	$tid=input('id');
+		$list=db('articlecomment')->where("tid=$tid")->order('id desc')->select();
+		return json($list);
+	 }
+	  
+	 public function aa(){    //查询二级评论的一级评论
+	 	$id=input('id');
+		$list=db('articlecomment')->where("id=$id")->find(); 
+		return json($list);
+	 }
+	 public function bb(){    //查询二级评论的二级评论
+	 	$aid=input('aid');
+		$list=db('article_comment')->where("aid=$aid")->order('id desc')->select(); 
+		return json($list);
+	 }
+	 
+	public function two_wz(){   //保存二级评论中的评论二级评论
+		$aid=input('aid');
+		$content=input('content');
+		$tid=input('tid');
+		$author=input('author'); 
+		$time=time();
+		$authorid="1";   //先默认等于1
+		$list=db('article_comment')->insert([
+		 "content"=>$content,
+		 "aid"=>$aid,
+		 "time"=>$time,
+		 "tid"=>$tid,
+          "author"=>str_replace('\"','',$author),
+          "authorid"=>$authorid
+		]);
+		return json([
+		 "content"=>$content,
+		
+		]);
+	}
+	
+	
 	public function index(){
 		// uid统一是第一视角id
 		$type=input('type_');
@@ -31,7 +85,7 @@ class Comment extends \think\Controller{
 			$se = db('articlecomment')->field('id')->where('tid='.$id)->select();//查找一级评论id
 			// t.authorid与a.authorid冲突，设置输出一个，不要自己的id
 			$sele_one=db('topic')->alias('a')
-						->field("a.title,a.describtion,a.image,a.views,a.articleclassid,a.viewtime,a.likes,a.articles,a.price,a.ispc,a.tximg,r.id,r.tid,r.title,r.authorid,r.author,r.time,r.content,r.comments")
+						->field("a.title,a.describtion,a.image,a.views,a.articleclassid,a.viewtime,a.likes,a.articles,a.price,a.ispc,a.tximg,r.id,r.tid,r.title,r.authorid,r.author,r.time,r.content,r.comments,r.supports")
 						->join('articlecomment r','tid='.$id)
 						->where(['a.authorid'=>$uid,'a.id'=>$id])->select();
 						$sele_two=array();
@@ -82,7 +136,9 @@ class Comment extends \think\Controller{
 					'tid'=>$id,'authorid'=>$uid,'author'=>$author,
 					'title'=>$title,'time'=>time(),'content'=>$content
 			];
+			 return json(['content'=>$content]);
 			$one_ment = db('articlecomment')->insert($data);
+			  
 			if ($one_ment) {
 				return json("1");
 			}else{
