@@ -22,21 +22,23 @@ class Index extends \think\Controller
     // 招聘
     public function job(){
     	if(empty(input('type_'))){
-    		$jobs = db('job')->order('id desc')->limit(0,5)->select();
+    		$jobs = db('job')->alias('j')->join('user u','j.uid=u.uid')
+    		->field('j.*,u.username')->order('id desc')->limit(0,5)->select();
     		$job=[];
 
     		foreach ( $jobs as $question ) {
 				 $squ = explode('市',  str_replace(',','', $question['address']));
 				 $question['address'] = str_replace('省', '-', $squ[0]);
-				 $question['pub_time'] = date('Y-m-d',$question['pub_time']);
+//				 $question['pub_time'] = date('Y-m-d',$question['pub_time']);
 				$job [] = $question;
 			}
     	}else{
-    		$job = db('job')->order('id desc')->paginate(6)->each(function($item, $key){
-     
+    		$job = db('job')->alias('j')->join('user u','j.uid=u.uid')
+    		->field('j.*,u.username')->order('id desc')->paginate(6)
+    		->each(function($item, $key){
             $squ = explode('市',  str_replace(',','', $item['address']));
                      $item['address'] = str_replace('省', '-', $squ[0]);
-                     $item['pub_time'] = date('Y-m-d',$item['pub_time']);
+//                   $item['pub_time'] = date('Y-m-d',$item['pub_time']);
             return $item;
 
     	           });
