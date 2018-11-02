@@ -13,13 +13,13 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => 'localhost',
+    'hostname'        => '47.100.76.23',
     // 数据库名
     'database'        => 'whatsns',
     // 用户名
     'username'        => 'root',
     // 密码
-    'password'        => 'root',
+    'password'        => 'dsf23DIE',
     // 端口
     'hostport'        => '',
     // 连接dsn

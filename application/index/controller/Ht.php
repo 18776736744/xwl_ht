@@ -17,4 +17,15 @@ class Ht extends \think\Controller{
 
 }
 
+   public function recruit_list(){  //查询分类列表
+     $name=input('name');
+     $list=db('category')->where("name=$name")->value("id");
+	 return json($list);
+
+   }
+
+   public function recruit(){    //添加招聘
+       
+   	
+   }
 ?>
