@@ -22,9 +22,20 @@ class Comment extends \think\Controller{
      }
 	 public function one_pl(){    //查询一级评论
 	 	$tid=input('id');
-		$list=db('articlecomment')->where("tid=$tid")->order('id desc')->select();
+		$list=db('articlecomment')->alias('a')
+		->join('user u','a.authorid=u.uid')
+		->field(['a.*','u.username','u.tximg'])
+		->where("a.tid=$tid")
+		->order('id desc')->select();
 		return json($list);
 	 }
+	  
+	  
+	  
+	  
+	  
+	  
+	  
 	  
 	 public function aa(){    //查询二级评论的一级评论
 	 	$id=input('id');
