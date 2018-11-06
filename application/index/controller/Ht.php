@@ -104,6 +104,10 @@ class Ht extends \think\Controller{
 			
 		}
    }
+<<<<<<< HEAD
+=======
+
+>>>>>>> f8f682c163196ec7522f8e6daff13a6c46da429f
 }
 
   
