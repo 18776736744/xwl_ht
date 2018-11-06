@@ -52,6 +52,11 @@ class Article extends \think\Controller
                 ->field("title,id,viewtime")
                 ->order('id desc')
                 ->select();
+        foreach ($lists as $key => $value) {
+
+                    $lists[$key]['viewtime'] = date("Y-m-d H:i",$value['viewtime']);
+                    $lists[$key]['longtap'] = false;
+                }        
         return json($lists);
     }
     

@@ -28,6 +28,7 @@ class Topic extends \think\Controller
         $xxtops = db('topic')->field("id,title,describtion,image,author,authorid,views,articleclassid,viewtime,likes,articles,price,ispc,tximg")->where("id=$id")->select();
         foreach ( $xxtops as $question ) {
                 $question['viewtime'] = date('Y-m-d',$question['viewtime']);
+                $question['tximg'] = db("user")->where("uid=".$question['authorid'])->value("tximg");
                 $xxtop[] = $question;
 				
             }

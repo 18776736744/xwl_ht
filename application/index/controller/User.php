@@ -40,31 +40,42 @@ class User extends \think\Controller{
 		return $mobile;
 	}
 
-	// 获取验证码
-	public function getYzm(){
+ public function getCode(){
 		$sendUrl = 'http://v.juhe.cn/sms/send'; //短信接口的URL
-  
-		// 随机验证码
-		$verfiy_code = rand(1000,9999);
+		  //
+		$verfiy_code = rand(1000,9999); 
 		$mobile = input('mobile');
+		$openid = input('openid');
 		$smsConf = array(
-		    'key'   => '32277140f35b8236c623ebeec48c567f', //您申请的APPKEY
-		    'mobile'    => $mobile, //接受短信的用户手机号码
-		    'tpl_id'    => '107479', //您申请的短信模板ID，根据实际情况修改
+		    'key'   => 'd6481fdd36387e34b9b43c2bbd573aff', //您申请的APPKEY
+		    'mobile'    =>  $mobile, //接受短信的用户手机号码
+		    'tpl_id'    => '103196', //您申请的短信模板ID，根据实际情况修改
 		    'tpl_value' =>'#code#='.$verfiy_code //您设置的模板变量，根据实际情况修改
 		);
 
-		// 连接数据库 
-		db('verfiy')->insert([
-			 'mobile'=>$mobile,
-			 'code'=>$verfiy_code,
-			 'status'=>1,
+		$regInfo=db("user")
+				  ->field("uid")
+				  ->where("phone=$mobile and openid='$openid'")
+				  ->find();
+		if($regInfo){
+			return json(["exist"=>true]);
+		}
+		$info = db("verify")
+				->field("status")
+				->where("mobile=$mobile")
+				->find();
+		if($info){
+			db('verify')->where('mobile',$mobile)->setField('code',$verfiy_code);
+		}else {
+			db('verify')->insert([
+			'mobile'=>$mobile,
+			'code'=>$verfiy_code,
+			'status'=>1,
 			]);
+		}
+	 
 
-		exit();
-		 
 		$content = juhecurl($sendUrl,$smsConf,1); //请求发送短信
-		 
 		if($content){
 		    $result = json_decode($content,true);
 		    $error_code = $result['error_code'];
@@ -81,7 +92,6 @@ class User extends \think\Controller{
 		    echo "请求发送短信失败";
 		}
 	}
-
 	// 上传头像
 	public function uploadImg()
 	{
@@ -101,6 +111,119 @@ class User extends \think\Controller{
 	        }
 	    }
 	}
+
+
+	// 注册
+	public function reg(){
+		$uinfo=json_decode(input('uinfo'),true);
+		$mobile=$uinfo['mobile'];
+		if (empty($mobile)) {
+			
+
+			return json(88);
+		}
+		$openid=input('openid');
+		$code=$uinfo['identifycode'];
+
+		$a;
+		$info = db("verify")
+				->field("status")
+				->where("mobile=$mobile and code='$code'")
+				->find();
+		$infoUser=db("user")
+				  ->field("uid,username,map,tximg")
+				  ->where("phone=$mobile")
+				  ->find();
+				  //如果验证码正确且用户表没有则把数据插入用户表
+		if($info&&!$infoUser){
+			db("user")->insert([
+				'phone'=>$mobile,
+				'openid'=>$openid,
+			]);
+			$a=json(getUinfo($openid));
+		}else if($infoUser){
+			db("user")
+				->where("uid=".$infoUser['uid'])
+				->update([
+					'openid'=>$openid,
+				]);
+
+			//如果用户表已经有了，则返回用户已存在标志
+			$a=json(getUinfo($openid));
+		}else {
+			//如果验证码错误
+			$a=json(["codeWrong"=>true]);
+		}
+		return $a;
+	}
+
+	public function login() {
+		$appid = 'wxa4499dcf136ab992';
+		$appSecret = '5d6444b3d79e04cbc7217d34f3c92fe1';
+		$code = input('code');
+		$url = "https://api.weixin.qq.com/sns/jscode2session?appid=".$appid."&secret=".$appSecret."&js_code=".$code."&grant_type=authorization_code";
+		$arr = vget($url);
+		$arr = json_decode($arr, true);
+		$openid = $arr['openid'];
+      	// openid 获取 一个用户和小程序的一条线 
+
+      	//  张三 授权 校外链小程序  18898498798
+      	//  李四 授权 校外链小程序  1654654654
+		// $session_key = $arr['session_key'];
+		// $rawDataArr = json_decode($_GET['rawData'], true);
+		// $userImg = $rawDataArr['avatarUrl'];
+		// $userName=$rawDataArr['nickName'];
+
+		// 判断用户表中是否存在该openid
+		// 登录需要，手机号码
+		// openid 查用户表，有没有openid
+		$id = null;
+		$res = db('user')->where('openid', $openid)->value('openid');
+		if ($res) {
+			
+			$info  = getUinfo($openid);				
+			return json($info);
+		} else {
+			//插入用户表数据
+			// db('user')->insert(['openid' => $openid, 'tximg' => $userImg,'username'=>$userName]);
+			// db('user')->insert(['openid' => $openid]);
+			// $id = db('user')->getLastInsID();
+			//插入参与表数据
+		}
+       
+          
+		// 返回用户信息
+          	return json(['uid' => $id, 'openid' => $arr['openid']]);
+          }
+
+          public function getInfoTime()
+          {
+		$openid=input('openid');
+          	
+          	$info  = getUinfo($openid);				
+			return json($info);
+          }
+ 
+
 }
 
+
+/**
+ * @author slzhang
+ * @DateTime 2018-06-22
+ * @param    [type]
+ * @return   [type]
+ */
+function vget($url){
+	$info = curl_init();
+	curl_setopt($info, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($info, CURLOPT_HEADER, 0);
+	curl_setopt($info, CURLOPT_NOBODY, 0);
+	curl_setopt($info, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($info, CURLOPT_SSL_VERIFYHOST, false);
+	curl_setopt($info, CURLOPT_URL, $url);
+	$output = curl_exec($info);
+	curl_close($info);
+	return $output;
+}
 ?>

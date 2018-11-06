@@ -47,7 +47,7 @@ class Qrcode extends \think\Controller {
               
                 if(file_put_contents($urls, $result)){
                     $code = [
-                        'code_img'=>'/public/xcxewm/'.$img,
+                        'code_img'=>'/uploads/img/'.$img,
                     ];
                     return json($code);
                 };

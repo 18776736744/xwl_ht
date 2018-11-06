@@ -1,7 +1,7 @@
 <?php 
 namespace app\index\controller;
 /**
- * 
+ * 个人资料和认证
  */
 class Identificate extends \think\Controller
 {
@@ -12,26 +12,30 @@ class Identificate extends \think\Controller
 	public function uploadImg()
 	{	
 		$file = request()->file('image');
-		$mobile=input('mobile');
+		$openid=input('openid');
+		$uid=input('uid');
 		$picNum=input('picNum');
 	    // 移动到框架应用根目录/public/uploads/ 目录下
 		if($file){
 			$info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
 			if($info){
-				$picture=$info->getSaveName();
+				$picture='/uploads/'.$info->getSaveName();
+
 				// 头像
 				if($picNum==0){
-					db('user')->where('mobile',$mobile)->update(['head_photo' => $picture]);
+					db('user')->where('openid',$openid)->update(['tximg' => $picture]);
 				}
 				// A面
 				else if($picNum==1){
-					db('user')->where('mobile',$mobile)->update(['id_cart_a' => $picture]);
+					db('vertify')->where('uid',$uid)->update(['zhaopian1' => $picture]);
 				}
 				// B面
 				else{
-					db('user')->where('mobile',$mobile)->update(['id_cart_b' => $picture]);
+					db('vertify')->where('uid',$uid)->update(['zhaopian2' => $picture]);
 				}
-
+		return json(getUinfo($openid));
+				
+				exit();
 			}else{
 	            // 上传失败获取错误信息
 				echo $file->getError();
@@ -41,48 +45,71 @@ class Identificate extends \think\Controller
 
 
 	// 上传认证的字符数据
+	// 认证教师和机构
 	public function uploadChars()
 	{
-		$mobile=input('mobile');
+		$uid=input('uid');
+		// 认证角色
 		$role=input('role');
-		// $province=input('province');
-		// $city=input('city');
-		// $area=input('area');
+		if ($role == 'company') {
+			$type = 1;
+		}else{
+			$type = 0;
+		}
 		$good_at=input('good_at');
+		$good_at_1=input('good_at_1');
+		$good_at_2=input('good_at_2');
+		$is_edit=input('is_edit');
+		$address=input('address');
 		$name=input('name');
 		$introuduce=input('introduce');
-
-		$address=input('address');
+ 
 		$latitude=input('latitude');
 		$longitude=input('longitude');
 
-		db('user')->where('mobile',$mobile)->update([
-			'role'=>$role,
-			// 'province'=>$province,
-			// 'city'=>$city,
-			// 'area'=>$area,
+		$f_data  = [
+			'type'=>$type,
+			'uid'=>$uid,
 			'name'=>$name,
-			'introduce'=>$introuduce,
-				// 'address'=>$address,
+			'jieshao'=>$introuduce,
+			'address'=>$address,
 			'lat'=>$latitude,
 			'lng'=>$longitude,
-			'good_at'=>$good_at
-		]);
+			'good_at'=>$good_at,
+			'good_at_1'=>$good_at_1,
+			'good_at_2'=>$good_at_2,
+		];
+		if ($is_edit) {
+			db('vertify')->where("uid=$uid")->update($f_data);
+		}else{
+			db('vertify')->insert($f_data);
+		}
+		return json([1]);
+	}
+	public function getYzinfo()
+	{
+		$uid = input("uid");
+
+		$info = db("vertify")->where("uid=$uid")->find();
+		return json($info);
 	}
 
 	// 上传地区
 	public function uploadRegion()
 	{
-		$mobile=input('mobile');
+		$openid=input('openid');
 		$province=input('province');
 		$city=input('city');
 		$area=input('area');
 
-		db('user')->where('mobile',$mobile)->update([
+		db('user')->where('openid',$openid)->update([
+			'map'=>$province.'|'.$city.'|'.$area,
 			'province'=>$province,
 			'city'=>$city,
 			'area'=>$area,
 		]);
+
+		return json(getUinfo($openid));
 	}
 }
 

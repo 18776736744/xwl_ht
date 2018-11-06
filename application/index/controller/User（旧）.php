@@ -3,10 +3,21 @@ namespace app\index\controller;
 class User extends \think\Controller{
 
 	public function getCode(){
+		
+		$mobile = input('mobile');
+
+		// 发送验证码前，判断此号码是否已经注册
+		$regInfo=db("user")
+				  ->field("id")
+				  ->where("mobile=$mobile")
+				  ->find();
+		if($regInfo){
+			return json(["exist"=>true]);exit();
+		}
+
 		$sendUrl = 'http://v.juhe.cn/sms/send'; //短信接口的URL
 		  //
 		$verfiy_code = rand(1000,9999); 
-		$mobile = input('mobile');
 		$smsConf = array(
 		    'key'   => '32277140f35b8236c623ebeec48c567f', //您申请的APPKEY
 		    'mobile'    =>  $mobile, //接受短信的用户手机号码
@@ -14,27 +25,23 @@ class User extends \think\Controller{
 		    'tpl_value' =>'#code#='.$verfiy_code //您设置的模板变量，根据实际情况修改
 		);
 
-		$regInfo=db("user")
-				  ->field("id")
-				  ->where("mobile=$mobile")
-				  ->find();
-		if($regInfo){
-			return json(["exist"=>true]);
-		}
+		// 8888
 		$info = db("verify")
 				->field("status")
 				->where("mobile=$mobile")
 				->find();
 		if($info){
+			// 记录验证码表
 			db('verify')->where('mobile',$mobile)->setField('code',$verfiy_code);
 		}else {
+			// 新的
 			db('verify')->insert([
 			'mobile'=>$mobile,
 			'code'=>$verfiy_code,
 			'status'=>1,
 			]);
 		}
-		exit();
+		 
 
 		$content = juhecurl($sendUrl,$smsConf,1); //请求发送短信
 		if($content){
