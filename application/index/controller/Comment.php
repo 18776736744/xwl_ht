@@ -18,7 +18,10 @@ class Comment extends \think\Controller{
 		 'time'=>time(),
 		 'content'=>$content]);
 		 
+		 $user=db('user')->where("uid=$authorid")->field('username,tximg')->find();
+		 
 		 return json(['content'=>$content,'authorid'=>$authorid,'supports'=>"0",'tid'=>$tid,'id'=>$list]);
+		 return json($user);
      }
 	 public function one_pl(){    //查询一级评论
 	 	$tid=input('id');
@@ -30,43 +33,37 @@ class Comment extends \think\Controller{
 		return json($list);
 	 }
 	  
-	  
-	  
-	  
-	  
-	  
-	  
-	  
-	 public function aa(){    //查询二级评论的一级评论
-	 	$id=input('id');
-		$list=db('articlecomment')->where("id=$id")->find(); 
-		return json($list);
-	 }
+
 	 public function bb(){    //查询二级评论的二级评论
-	 	$aid=input('aid');
-		$list=db('article_comment')->where("aid=$aid")->order('id desc')->select(); 
+	 
+	 	$plid=input('plid');
+		$wzid=input('wzid');
+		$list=db('article_comment')->where("plid=$plid","wzid=$wzid")
+		->alias('a')->join('user u','a.mid=u.uid')->order('id desc')
+		->field(['a.*','u.username','u.tximg'])->select(); 
+		
+		if($list){
+			db('articlecomment')->where("id=$plid")->setInc('num');
+		}
+		
 		return json($list);
 	 }
 	 
-	public function two_wz(){   //保存二级评论中的评论二级评论
-		$aid=input('aid');
-		$content=input('content');
-		$tid=input('tid');
-		$author=input('author'); 
-		$time=time();
-		$authorid="1";   //先默认等于1
-		$list=db('article_comment')->insert([
-		 "content"=>$content,
-		 "aid"=>$aid,
-		 "time"=>$time,
-		 "tid"=>$tid,
-          "author"=>str_replace('\"','',$author),
-          "authorid"=>$authorid
-		]);
-		return json([
-		 "content"=>$content,
+	public function two_wz(){   //保存二级评论页面的评论
+	    	$wzid=input('wzid');
+			$plid=input('plid');
+			$mid=input('mid'); 
+		    $content=input('content');
+		    $time=time();
 		
+		$list=db('article_comment')->insert([
+		 "wzid"=>$wzid,
+		 "plid"=>$plid,
+		 "mid"=>$mid,
+		 "content"=>$content,
+		 "time"=>$time
 		]);
+		return json('1');
 	}
 	
 	
