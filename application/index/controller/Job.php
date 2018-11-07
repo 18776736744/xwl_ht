@@ -88,5 +88,28 @@ class Job extends \think\Controller
         }
 
     }
+
+
+    public function toudi()
+    {
+        $id = input("job_id");
+
+        $msgfrom = '校外链管理员';
+        $username =  input("username");
+        $uid = input("uid");
+        $phone = input("phone");
+
+       
+        $info = db("job")->field("category,uid")->where("id=$id " )->find();
+         
+             
+        sendMsg( $msgfrom, 0,  $info['uid'], $username . "对您说：我对您的岗位有意向", '我对贵学校发布的'.$info['category'].'岗位有意向，我的电话是'.$phone.'，希望与您合作。 ', "job" );
+
+        return json( "投递成功");
+         
+
+        
+
+    }
     
 }

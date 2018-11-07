@@ -5,7 +5,7 @@ class Zhuye extends \think\Controller{
     public function getFlag($value='')
     {
         $uid = input('uid');
-        $type = db('approve')->where("uid='$uid'")->value('type');
+        $type = db('vertify')->where("uid='$uid'")->value('type');
         return json($type);
     }
 
@@ -13,123 +13,150 @@ class Zhuye extends \think\Controller{
     // 机构头像
     public function head(){
         $uid = input('uid');
-        $head = db('teacher_user')->where("mobile='$uid'")->value('head_portrait');
+        $head = db('user')->where("uid='$uid'")->value('tximg');
         return json($head);
     }
     // 机构名字
     public function name(){
         $uid = input('uid');
-        $name = db('approve')->where("uid='$uid'")->value('orgName');
+        $name = db('vertify')->where("uid='$uid'")->value('name');
         return json($name);
     }
     // 机构营业执照
     public function pic(){
         $uid = input('uid');
         $all_img = '';
-        $all_img[0] = db('approve')->where("uid='$uid'")->value('pic_zhengmian');
-        $all_img[1] = db('approve')->where("uid='$uid'")->value('pic_fanmian');
+        $all_img[0] = db('vertify')->where("uid='$uid'")->value('zhaopian1');
+        $all_img[1] = db('vertify')->where("uid='$uid'")->value('zhaopian2');
+
+        foreach ($all_img as $key => $value) {
+            if (strstr($value,'upload')) {
+                $all_img[$key] = 'https://www.xiaowailian.com/xwl_ht/public'.$value;
+            }else{
+                $all_img[$key] = 'https://www.xiaowailian.com/'.$value;
+            }
+        }
         return json($all_img);        
     }
     // 机构电话
     public function mobile(){
-        $mobile = db('teacher_user')->where('id=2')->value('mobile');
+        $uid = input('uid');
+
+        $mobile = db('user')->where("uid='$uid'")->value('phone');
         return json($mobile);
     }
     // 机构地址
     public function add(){
         $uid = input('uid');
         $add = '';
-        $add[0] = db('teacher_user')->where("mobile='$uid'")->value('province');
-        $add[1] = db('teacher_user')->where("mobile='$uid'")->value('city');
-        $add[2] = db('teacher_user')->where("mobile='$uid'")->value('country');
-        return json($add);
+        $info = db('vertify')->where("uid='$uid'")->field('address,lng,lat')->find(); 
+        if (empty($info['address'])) {
+            $info = db('user')->where("uid='$uid'")->field('map address')->find(); 
+        }
+        return json($info);
     }
     // 机构简介
     public function jianjie(){
         $uid = input('uid');
-        $jian_jie = db('approve')->where("uid='$uid'")->value('jianjie');
+        $jian_jie = db('vertify')->where("uid='$uid'")->value('jieshao');
         return json($jian_jie);
     }
     // 机构评论列表
     public function pinglun()
     {
         $uid = input('uid');
-        $u_list = db("commont_list")->where("pldx='$uid'")->paginate(5);
+
+        $u_list = db("commont_list")->alias('c')
+            ->field("c.*,u.username,u.tximg")
+            ->join("user u","c.plr = u.uid")
+            ->order("c.id desc")
+            ->where("pldx='$uid' and status =2")->paginate(5);
+
+            
         return json($u_list);
     }
     // 机构课程列表
     public function kecheng()
     {
-
-        $u_list = db("kecheng")->paginate(6);
+         $uid = input('uid');
+        $u_list = db("kecheng")->where("uid='$uid'")->order("id desc")->paginate(6);
         return json($u_list);
     }
     // 机构招聘列表
     public function zhaopin()
     {
-        $u_list = db("job")->paginate(4);
+         $uid = input('uid');
+        $u_list = db("job")->where("uid='$uid'")->order("id desc")->paginate(4);
         return json($u_list);
     }
 
 
+    public function newinfo()
+    {
+        $uid = input('uid');
+        $headT = db('vertify')->where("uid='$uid'")->find();
 
+        if ($headT['type'] == 1) {
+            $headT['kecheng_num'] = db("kecheng")->where("uid=$uid")->count();
+            $headT['job_num'] = db("job")->where("uid=$uid")->count();
+        }else{
+            $headT['uinfo'] = db("user")->where("uid=$uid")->find();
+        }
+        
+        return json($headT);
+    }
 
     
     // 教师头像
     public function headT(){
         $uid = input('uid');
-        $headT = db('teacher_user')->where("mobile='$uid'")->value('head_portrait');
+        $headT = db('user')->where("uid='$uid'")->value('tximg');
         return json($headT);
     }   
     // 教师名字
     public function nameT(){
         $uid = input('uid');
-        $nameT= db('approve')->where("uid='$uid'")->value('teachName');
+        $nameT= db('vertify')->where("uid='$uid'")->value('name');
         return json($nameT);
     }
     // 教师电话
     public function mobileT(){
         $uid = input('uid');
-        $mobile = db('teacher_user')->where("mobile='$uid'")->value('mobile');
+        $mobile = db('user')->where("uid='$uid'")->value('phone');
         return json($mobile);
     }
     // 教师证件照片
     public function picT(){
         $uid = input('uid');
         $all_img = '';
-        $all_img[0] = db('approve')->where("uid='$uid'")->value('pic_zhengmian');
-        $all_img[1] = db('approve')->where("uid='$uid'")->value('pic_fanmian');
+        $all_img[0] = db('vertify')->where("uid='$uid'")->value('zhaopian1');
+        $all_img[1] = db('vertify')->where("uid='$uid'")->value('zhaopian2');
         return json($all_img);        
     }
     // 教师简介
     public function jianjieT(){
         $uid = input('uid');
-        $jian_jieT = db('approve')->where("uid='$uid'")->value('jianjie');
+        $jian_jieT = db('vertify')->where("uid='$uid'")->value('jieshao');
         return json($jian_jieT);
     }
     // 教师教学经历
     public function jingliT(){
         $uid = input('uid');
         $jing_liT = '';
-        $jing_liT[0] = db('teacher_road')->where("uid='$uid'")->value('doing_time');
-        $jing_liT[1] = db('teacher_road')->where("uid='$uid'")->value('company');
-        $jing_liT[2] = db('teacher_road')->where("uid='$uid'")->value('category');
-        $jing_liT[3] = db('teacher_road')->where("uid='$uid'")->value('money_grade');
+        $jing_liT = db('teacher_road')->where("uid='$uid'")->order('id desc')->select();
+
+        foreach ($jing_liT as $key => $value) {
+             if (intval($value['category'])>0) {
+                $jing_liT[$key]['fenlei'] = db("category")->where("id=".$value['category'])->value("name");
+            }
+        }
         return json($jing_liT);
     }
-    // 教师评论
-    public function pinglunT()
-    {
-        $uid = input('uid');
-        $u_list = db("commont_list")->where('pldx=1')->paginate(5);
-        return json($u_list);
-    }
+   
     // 教师岗位
     public function gangwei(){
         $uid = input('uid');
-        $gang_wei = '';
-        $gang_wei[0] = db('teacher_user')->where('id=1')->value('dangqian');
-        $gang_wei[1] = db('teacher_user')->where('id=1')->value('yixiang');
+        $gang_wei = db('user')->field("is_busy,has_teacher_zm,money_grade")->where("uid=$uid")->find();
         return json($gang_wei);
     }
 }

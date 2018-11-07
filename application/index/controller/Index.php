@@ -23,7 +23,7 @@ class Index extends \think\Controller
     public function job(){
     	if(empty(input('type_'))){
     		$jobs = db('job')->alias('j')->join('user u','j.uid=u.uid')
-    		->field('j.*,u.username')->order('id desc')->limit(0,5)->select();
+    		->field('j.*,u.username,u.tximg')->order('id desc')->limit(0,5)->select();
     		$job=[];
 
     		foreach ( $jobs as $question ) {

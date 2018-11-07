@@ -104,7 +104,6 @@ class Ht extends \think\Controller{
 			
 		}
    }
-
 }
 
   

@@ -2,6 +2,7 @@
 namespace app\index\controller;
 
 class Categorygd extends \think\Controller{
+    // 三级联动
     public function sjld()
     {
          // 要把一级分类全部查出来
@@ -61,55 +62,97 @@ class Categorygd extends \think\Controller{
     	$area=input('area');
     	$classify=input('classify');
     	$role=input('role');
-    	$key=input('key');
+        $key=input('key');
+    	$search_cate=input('search_cate');
     	$list;
-			$where = [];
+            $where['status'] =  1;
+			$where['type'] =  $role;
     	$grolist;
     	//分四种情况，区域和类别都不为空、区域不为空、类别不为空、区域和类别都不为空。
-//  	$where['teacher_username']=array('like','%'.$key.'%');
+ 	$where['name']=array('like','%'.$key.'%');
+
+        $where['good_at_1']=array('like','%'.$search_cate.'%');
+    
     	if($area&&$classify){
 
-    		$where['area'] = array('eq',$area);
+    		$where['address'] = array('like','%'.$area.'%');
 			$where['good_at'] = array('like','%'.$classify.'%');
-    		$grolist=db("teacher_user")->where($where)->paginate(5);
+    		
     	}else if($area){
-    		$where['area']=array('eq',$area);
-    		$grolist=db("teacher_user")->where($where)->paginate(5);
+            $where['address'] = array('like','%'.$area.'%');
+    		 
     	}else if($classify){
     		$where['good_at']=array('like','%'.$classify.'%');
-    		$grolist=db("teacher_user")->where($where)->paginate(5);
-    	}else {
-
-    			$grolist=db("teacher_user")->where($where)->paginate(5);
+    		 
     	}
+
+        if (empty($area)) {
+            $cur_area = json_decode(input('cur_area'),true);
+            $where['address'] = array('like','%'. $cur_area['province'].'%');
+            // city : "广州市"district : "天河区"nation : "中国"province : "广东省"street : "天府路"street_number : "天府路1号"
+        }
+        $grolist=db("user")->alias("u")
+                ->field("u.uid,u.tximg,v.*")
+                ->join("vertify v","u.uid=v.uid")
+                ->where($where)->paginate(5)->each(function($item, $key){
+                    $uid = $item['uid'];
+                    if ($item['type'] == 1) {
+                        $item['kecheng_num'] = db("kecheng")->where("uid=$uid")->count();
+                        $item['job_num'] = db("job")->where("uid=$uid")->count();
+                    }else{
+                        $item['uinfo'] = db("user")->where("uid=$uid")->find();
+                    }
+
+
+                    return $item;
+                });
+
+
+ 
     	return json($grolist);
     }
     public function distanceSort(){
     	$area=input('area');
     	$classify=input('classify');
-    	$key=input('key');
+        $key=input('key');
+    	$search_cate=input('search_cate');
     	$role=input('role');
     	$lng=(float)input('lng');
     	$lat=(float)input('lat');
     	$list;
     	$grolist;
 
-    	$where['name']=array('like','%'.$key.'%');
+        $where['status'] =  1;
+        $where['type'] =  $role;
+        $where['name']=array('like','%'.$key.'%');
+    	$where['good_at_1']=array('like','%'.$search_cate.'%');
     	if($area&&$classify){
 
-    		$where['area'] = array('eq',$area);
+            $where['address'] = array('like','%'.$area.'%');
 			$where['good_at'] = array('like','%'.$classify.'%');
-    		$grolist=db("teacher_user")->where($where)->paginate(5);
+    		
     	}else if($area){
-    		$where['area']=array('eq',$area);
-    		$grolist=db("teacher_user")->where($where)->paginate(5);
+            $where['address'] = array('like','%'.$area.'%');
     	}else if($classify){
     		$where['good_at']=array('like','%'.$classify.'%');
-    		$grolist=db("teacher_user")->where($where)->paginate(5);
-    	}else {
-
-    			$grolist=db("teacher_user")->where($where)->paginate(5);
     	}
+
+		$grolist=db("user")->alias("u")
+        ->field("u.uid,u.tximg,v.*")
+        ->join("vertify v","u.uid=v.uid")->where($where)->paginate(5)->each(function($item, $key){
+                    $uid = $item['uid'];
+                    if ($item['type'] == 1) {
+                        $item['kecheng_num'] = db("kecheng")->where("uid=$uid")->count();
+                        $item['job_num'] = db("job")->where("uid=$uid")->count();
+                    }else{
+                        $item['uinfo'] = db("user")->where("uid=$uid")->find();
+                    }
+
+
+                    return $item;
+                });
+
+                 
     	$gap=[];
     	$length=count($grolist);
     	//算出取出的数据和当前位置的距离
@@ -133,8 +176,8 @@ class Categorygd extends \think\Controller{
 
     //获取地区的三级联动
     public function getArea(){
-    	$first_cate =  db("area")->where('level=1')->order('id asc')->select();
-    	$a =  db("area")->where('level=1')->field('areaname')->order('id asc')->select();
+    	$first_cate =  db("areagd")->where('level=1')->order('id asc')->select();
+    	$a =  db("areagd")->where('level=1')->field('areaname')->order('id asc')->select();
     	$second_cate = $third_cate = [];
     	$return_first_cate=[];
     	$return_second_cate=$return_third_cate=[];
@@ -142,11 +185,11 @@ class Categorygd extends \think\Controller{
     		if ($first_cate[$i]['id']) {
 
          	// 把一级分类的第一个里的二级子分类全部查出来
-    		 	$second_cate[$i] =  db("area")->where('parentid = '.$first_cate[$i]['id'].' and level=2')->order('id asc')->select();
+    		 	$second_cate[$i] =  db("areagd")->where('parentid = '.$first_cate[$i]['id'].' and level=2')->order('id asc')->select();
     		 	if($second_cate[$i]){
     		 		for($j=0;$j<count($second_cate[$i]);$j++){
     		 			if ($second_cate[$i][$j]['id']) {
-    		 					$third_cate[$i][$j] =  db("area")->where('parentid = '.$second_cate[$i][$j]['id'].' and level=3')->order('id asc')->select();
+    		 					$third_cate[$i][$j] =  db("areagd")->where('parentid = '.$second_cate[$i][$j]['id'].' and level=3')->order('id asc')->select();
     		 			}
     		 		}
     		 	}
