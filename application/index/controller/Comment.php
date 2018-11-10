@@ -63,7 +63,7 @@ class Comment extends \think\Controller{
 		 "content"=>$content,
 		 "time"=>$time
 		]);
-		return json('1');
+		return json(["content"=>$content]);
 	}
 	
 	

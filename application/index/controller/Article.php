@@ -49,7 +49,7 @@ class Article extends \think\Controller
 
         $lists = db("topic")
                 ->where("authorid=$uid")
-                ->field("title,id,viewtime")
+                ->field("title,id,viewtime,views")
                 ->order('id desc')
                 ->select();
         foreach ($lists as $key => $value) {

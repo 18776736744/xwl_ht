@@ -104,7 +104,79 @@ class Ht extends \think\Controller{
 			
 		}
    }
+    public function pur_class(){   //购课须知
+    	 $xz=input('xz');
+    	$list=db('setting')->where("k='$xz'")->find();
+		return json($list);
+    }
+    
+	public function add_num(){  //点进文章加一
+	    $id=input('id');
+		$list=db('topic')->where("id=$id")->setInc('views');
+		return json($list);
+		
+	}
+    public function kecheng(){  //上传课程
+   	    $uid=input('uid');
+		$kecheng_name =input('kecheng_name');
+		$age_range =input('age_range');
+		$class_type =input('class_type');
+		$class_zhidu =input('class_zhidu');
+		$money=input('money');
+		$times=input('times');
+		$school =input('school');
+		$teacher=input('teacher');
+		$description =input('description');
+		$image =input('image');
+		$chengnuo =input('chengnuo');
+		
+		$list=db('kecheng')->insert(['uid'=>$uid,'kecheng_name'=>$kecheng_name,
+		    'age_range'=>$age_range,'kecheng_name'=>$kecheng_name,
+		    'class_type'=>$class_type,'class_zhidu'=>$class_zhidu,
+		    'money'=>$money,'start_time'=>$times,
+		    'school'=>$school,'teacher'=>$teacher,
+		    'description'=>$description,'image'=>$image,
+		    'chengnuo'=>$chengnuo
+		    ]);
+			
+		return json($list);
+   }
+	
+	public function fabulous_recruit(){    //招聘收藏
+		$uid=input('uid');
+		$tid=input('tid');
+		$time=time();
+		
+		$list_see=db('job_likes')->where(["tid"=>$tid,"uid"=>$uid])->find();
+		
+		if($list_see){
+		db('job_likes')->where(["tid"=>$tid,"uid"=>$uid])->delete();
+		db('job')->where("id=$tid")->setDec('likes');
+		 return json("1");
+		}
+		else{
+		db('job_likes')->insert(['uid'=>$uid,'tid'=>$tid,'time'=>$time]);
+		db('job')->where("id=$tid")->setInc('likes');
+		 return json("2");
+		}
+	}
+	
+	
+	public function see_recruit(){   //查询招聘收藏
+		$uid=input('uid');
+		$tid=input('tid');	          
+		$list=db('job_likes')->where(["tid"=>$tid,"uid"=>$uid])->find();
+		if($list){
+			return json('2');
+		}
+		else{
+			return json('1');
+		}
+		
+	}
 }
-
+   
+   
+  
   
 ?>

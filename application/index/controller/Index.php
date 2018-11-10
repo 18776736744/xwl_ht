@@ -34,7 +34,7 @@ class Index extends \think\Controller
 			}
     	}else{
     		$job = db('job')->alias('j')->join('user u','j.uid=u.uid')
-    		->field('j.*,u.username')->order('id desc')->paginate(6)
+    		->field('j.*,u.username,u.tximg')->order('id desc')->paginate(6)
     		->each(function($item, $key){
             $squ = explode('市',  str_replace(',','', $item['address']));
                      $item['address'] = str_replace('省', '-', $squ[0]);
