@@ -174,9 +174,105 @@ class Ht extends \think\Controller{
 		}
 		
 	}
-}
-   
-   
+
+  public function my_collection(){
+  	  $uid=input('uid');
+	  $list=db('topic_likes')->where("l.uid=$uid")->alias('l')->join('topic t','l.tid=t.id')
+	  ->order('l.id desc')->field('t.title,t.image,t.author,t.id')->select();
+	  
+	  return json($list);
+  }
+  public function my_recruit(){
+  	  $uid=input('uid');
+	 
+	  $list=db('job_likes')->where("l.uid=".$uid)
+	  ->alias('l')
+	  ->join('job j','l.tid=j.id')
+	  ->join('user u',"u.uid=l.uid")->order('l.id desc')
+	  ->field('j.id,j.category,j.money,j.address,j.people,j.xueli,j.people,j.people,u.username,u.tximg')
+	  ->select();
+	  
+	  
+	  
+	  
+	  return json($list);
+  } 
+  	public function fabulous_curriculum(){    //课程收藏
+		$uid=input('uid');
+		$tid=input('tid');
+		$time=time();
+		
+		$list_see=db('kecheng_likes')->where(["tid"=>$tid,"uid"=>$uid])->find();
+		
+		if($list_see){
+		db('kecheng_likes')->where(["tid"=>$tid,"uid"=>$uid])->delete();
+		db('kecheng')->where("id=$tid")->setDec('likes');
+		 return json("1");
+		}
+		else{
+		db('kecheng_likes')->insert(['uid'=>$uid,'tid'=>$tid,'time'=>$time]);
+		db('kecheng')->where("id=$tid")->setInc('likes');
+		 return json("2");
+		}
+	}
+	
+	
+	
+	public function see_curriculum(){   //查询课程收藏
+		$uid=input('uid');
+		$tid=input('tid');	          
+		$list=db('kecheng_likes')->where(["tid"=>$tid,"uid"=>$uid])->find();
+		if($list){
+			return json('2');
+		}
+		else{
+			return json('1');
+		}
+		
+	}
   
+    public function my_curriculum(){
+  	  $uid=input('uid');
+	  $list=db('kecheng_likes')->where("l.uid=$uid")->alias('l')->join('kecheng k','l.tid=k.id')
+	  ->order('l.id desc')->field('k.kecheng_name,k.image,k.money,k.school,k.id')->select();
+	  
+	  return json($list);
+  }   
+   
+   public function  search(){   //搜索
+   	$content=input('search');
+	$list_user=db('user')->where('username','like',"%".$content."%")->alias('u')
+	                     ->join('vertify v','u.uid=v.uid' )
+	                     ->field('u.*,v.type,v.id')->select();  //用户
+	
+	
+	
+	$list_zp=db('job')->where('category','like',"%".$content."%")->alias('j')
+	                  ->join('user u','j.uid=u.uid' )
+	                  ->field('j.*,u.username,u.tximg')->order('j.id desc')->select(); //招聘
+	
+	
+	
+    $lit_wz=db('topic')->where('title','like',"%".$content."%")->alias('t')
+                       ->join('user u','t.authorid=u.uid' )
+                       ->field('t.*,u.username')->order('t.id desc')->select(); //文章
+                       
+               foreach($lit_wz as $key=>$lit_wz_xg){
+               	    $lit_wz[$key]['viewtime'] = date('Y-m-d',$lit_wz_xg['viewtime']);
+               }        
+               //错误的思路
+               //$lit_wz_xg['viewtime'] = date('Y-m-d',$lit_wz_xg['viewtime']);
+			   //想的是替换掉原来的，在把这个  $lit_wz_xg ==  $lit_wz 然后我就卡住了，
+			   //以为我不知道怎么让前面等于后面 而且viewtime谁=谁不知道
+                       
+					   
+					   
+                       
+    $list_kc=db('kecheng')->where('kecheng_name','like',"%".$content."%")->select(); //课程                   
+    
+    return json(['user'=>$list_user,'zp'=>$list_zp,'wz'=>$lit_wz,'kc'=>$list_kc]);
+   }
+  
+}
   
 ?>

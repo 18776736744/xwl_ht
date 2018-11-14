@@ -42,9 +42,9 @@ class Comment extends \think\Controller{
 		->alias('a')->join('user u','a.mid=u.uid')->order('id desc')
 		->field(['a.*','u.username','u.tximg'])->select(); 
 		
-		if($list){
-			db('articlecomment')->where("id=$plid")->setInc('num');
-		}
+//		if($list){
+//			db('articlecomment')->where("id=$plid")->setInc('num');
+//		}
 		
 		return json($list);
 	 }
@@ -63,6 +63,9 @@ class Comment extends \think\Controller{
 		 "content"=>$content,
 		 "time"=>$time
 		]);
+		if($list){
+			db('articlecomment')->where("id=$plid")->setInc('num');
+		}
 		return json(["content"=>$content]);
 	}
 	
