@@ -27,30 +27,57 @@ class Categorygd extends \think\Controller{
 
     		}
 	    }
+        $n = 0;
 	    //把每条记录的name属性提取出来
 	    for($i=0;$i<count($first_cate);$i++){
-	    	$return_first_cate[$i]=$first_cate[$i]['name'];
+            if ($n==0) {
+                # code...
+                $return_first_cate[$n]='全部';
+            ++$n;
+
+            } 
+                $return_first_cate[$n]=$first_cate[$i]['name'];
+            ++$n;
+         
+	    	
+
 	    }
 
+        $e=0;
 	    for($i=0;$i<count($second_cate);$i++){
 	    	if($first_cate[$i]){
 	    		for($j=0;$j<count($second_cate[$i]);$j++){
-	    			$return_second_cate[$i][$j]=$second_cate[$i][$j]['name'];
+                    if ($e==0) {
+                        # code...
+                        $return_second_cate[$e][$j]='全部';
+                        ++$e;
+                    }
+	    			$return_second_cate[$e][$j]=$second_cate[$i][$j]['name'];
+                    
 	    		}
 	    	}
+            ++$e;
+
 	    }
 	    $second_cate=array_values($second_cate);
 
+        $t = 0;
 	    for($i=0;$i<count($third_cate);$i++){
 	    	if($second_cate[$i]){
 	    		for($j=0;$j<count($third_cate[$i]);$j++){
 	    			if($second_cate[$i][$j]){
 	    				for($k=0;$k<count($third_cate[$i][$j]);$k++){
-	    					$return_third_cate[$i][$j][$k]=$third_cate[$i][$j][$k]['name'];
+                             if ($t==0) {
+                                    # code...
+                                   $return_third_cate[$t][$j][$k]='全部';
+                                    ++$t;
+                                }
+	    					$return_third_cate[$t][$j][$k]=$third_cate[$i][$j][$k]['name'];
 	    				}
 	    			}
 	    		}
 	    	}
+            ++$t;
 	    }
 	    return json(['first_cate'=>$return_first_cate,
 	    			'second_cate'=>$return_second_cate,
@@ -73,15 +100,15 @@ class Categorygd extends \think\Controller{
 
         $where['good_at_1']=array('like','%'.$search_cate.'%');
     
-    	if($area&&$classify){
+    	if($area&&$classify && $area!='全部' && $classify!='全部'){
 
     		$where['address'] = array('like','%'.$area.'%');
 			$where['good_at'] = array('like','%'.$classify.'%');
     		
-    	}else if($area){
+    	}else if($area && $area!='全部'){
             $where['address'] = array('like','%'.$area.'%');
     		 
-    	}else if($classify){
+    	}else if($classify && $classify!='全部'){
     		$where['good_at']=array('like','%'.$classify.'%');
     		 
     	}
@@ -97,11 +124,13 @@ class Categorygd extends \think\Controller{
                 ->where($where)->paginate(5)->each(function($item, $key){
                     $uid = $item['uid'];
                     if ($item['type'] == 1) {
-                        $item['kecheng_num'] = db("kecheng")->where("uid=$uid")->count();
+                        $item['kecheng_num'] = db("kecheng")->where("uid=$uid and is_delete=2")->count();
                         $item['job_num'] = db("job")->where("uid=$uid")->count();
                     }else{
                         $item['uinfo'] = db("user")->where("uid=$uid")->find();
                     }
+                    $item['plinfo'] = 
+                     db("commont_list")->field ( 'sum(star) sum_s,count(id) c' )->where( array("pldx"=>$item['uid'],'status'=>2))->find();
 
 
                     return $item;
@@ -126,14 +155,14 @@ class Categorygd extends \think\Controller{
         $where['type'] =  $role;
         $where['name']=array('like','%'.$key.'%');
     	$where['good_at_1']=array('like','%'.$search_cate.'%');
-    	if($area&&$classify){
+    	if($area&&$classify && $area!='全部' && $classify!='全部'){
 
             $where['address'] = array('like','%'.$area.'%');
 			$where['good_at'] = array('like','%'.$classify.'%');
     		
-    	}else if($area){
+    	}else if($area && $area!='全部'){
             $where['address'] = array('like','%'.$area.'%');
-    	}else if($classify){
+    	}else if($classify && $classify!='全部'){
     		$where['good_at']=array('like','%'.$classify.'%');
     	}
 
@@ -142,12 +171,13 @@ class Categorygd extends \think\Controller{
         ->join("vertify v","u.uid=v.uid")->where($where)->paginate(5)->each(function($item, $key){
                     $uid = $item['uid'];
                     if ($item['type'] == 1) {
-                        $item['kecheng_num'] = db("kecheng")->where("uid=$uid")->count();
+                        $item['kecheng_num'] = db("kecheng")->where("uid=$uid and is_delete=2")->count();
                         $item['job_num'] = db("job")->where("uid=$uid")->count();
                     }else{
                         $item['uinfo'] = db("user")->where("uid=$uid")->find();
                     }
-
+                      $item['plinfo'] = 
+                     db("commont_list")->field ( 'sum(star) sum_s,count(id) c' )->where( array("pldx"=>$item['uid'],'status'=>2))->find();       
 
                     return $item;
                 });
@@ -198,29 +228,57 @@ class Categorygd extends \think\Controller{
     		}
 	    }
 
+        $n=0;
 	    for($i=0;$i<count($first_cate);$i++){
-	    	$return_first_cate[$i]=$first_cate[$i]['areaname'];
+             if ($n==0) {
+                # code...
+                $return_first_cate[$n]='全部';
+            ++$n;
+
+            } 
+                $return_first_cate[$n]=$first_cate[$i]['areaname'];
+            ++$n;
 	    }
 
+        $e = 0;
 	    for($i=0;$i<count($second_cate);$i++){
 	    	if($first_cate[$i]){
 	    		for($j=0;$j<count($second_cate[$i]);$j++){
-	    			$return_second_cate[$i][$j]=$second_cate[$i][$j]['areaname'];
+                    if ($e==0) {
+                            # code...
+                             $return_second_cate[$e][$j]='全部';
+                        ++$e;
+
+                        } 
+                    $return_second_cate[$e][$j]=$second_cate[$i][$j]['areaname'];
+
 	    		}
 	    	}
+            ++$e;
+
 	    }
 	    $second_cate=array_values($second_cate);
 
+        $th = 0;
 	    for($i=0;$i<count($third_cate);$i++){
 	    	if($second_cate[$i]){
 	    		for($j=0;$j<count($third_cate[$i]);$j++){
 	    			if($second_cate[$i][$j]){
 	    				for($k=0;$k<count($third_cate[$i][$j]);$k++){
-	    					$return_third_cate[$i][$j][$k]=$third_cate[$i][$j][$k]['areaname'];
+                             if ($th==0) {
+                                # code...
+                            $return_third_cate[$th][$j][$k]='全部';
+
+                                ++$th;
+
+                            } 
+                            $return_third_cate[$th][$j][$k]=$third_cate[$i][$j][$k]['areaname'];
+
 	    				}
 	    			}
 	    		}
 	    	}
+            ++$th;
 	    }
 	    return json(['first_cate'=>$return_first_cate,
 	    			'second_cate'=>$return_second_cate,

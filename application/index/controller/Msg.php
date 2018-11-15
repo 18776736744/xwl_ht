@@ -28,7 +28,7 @@ class Msg extends \think\Controller
         $msg_list = db("message")->alias("m")
             // ->join("user u","m.touid = u.uid")
             ->field("m.*")
-            // ->where("m.touid=$uid")
+            ->where("m.touid=$uid")
             ->order("m.id desc")
             ->select();
 

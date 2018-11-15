@@ -109,6 +109,37 @@ class Smith extends \think\Controller{
 		 return json($sl);
 	 
 	}
+
+
+
+	public function teacher_load()
+	{
+		$data['uid'] = input("uid");
+		$data['doing_time'] = input( 'doing_time' );
+		$data['doing_time_end'] = input( 'doing_time_end' );
+		$data['company'] = input( 'company' );
+		$data['category'] = input( 'category' );
+		$data['money_grade'] = input( 'money_grade' );
+			
+		db( 'teacher_road')->insert($data );
+	}
+
+	public function load_lists()
+	{
+		$uid = input("uid");
+
+		$load_lists = db("teacher_road")->where(" uid = ". $uid)->order("id desc" )->select();
+
+		foreach ( $load_lists as $key=>$question ) {
+			if (intval($question['category'])>0) {
+			 	$load_lists[$key]['category']=db("category")->where("id=".$question['category'])->value('name');
+				 
+			}
+			 
+		}
+
+		return json($load_lists);
+	}
      
 
 
