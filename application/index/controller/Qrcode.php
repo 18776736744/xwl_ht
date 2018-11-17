@@ -27,6 +27,7 @@ class Qrcode extends \think\Controller {
             //获取token
             $appID = "wxa4499dcf136ab992";
             $appSecret = "5d6444b3d79e04cbc7217d34f3c92fe1";
+			//接口调用凭证
             $tokenUrl= "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" .$appID ."&secret=".$appSecret;
             $getArr=array();
             $tokenArr=json_decode($this->send_post($tokenUrl,$getArr,"GET"));
@@ -41,6 +42,7 @@ class Qrcode extends \think\Controller {
                 //'line_color'=>$line_color,
             ];
             $post_data= json_encode($data,true);
+			//选着的接口 下
             $url="https://api.weixin.qq.com/wxa/getwxacode?access_token=".$access_token;
             $result=$this->api_notice_increment($url,$post_data);
             if ($result){

@@ -1,0 +1,56 @@
+.icon-houtai{
+	width:60px;
+	height: 60px;
+}
+nav{
+	float: left;
+	background:#273146;
+	width:200px;
+	height:750px;
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+ul{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	width: 200px;
+	margin: 50px 0px;
+
+}
+
+li a{
+	display: block;
+	color:#9398a2;
+	padding:8px 20px !important;
+	text-decoration:none !important;
+	
+}
+
+li a:hover {
+    color: white;
+     border-radius:2%;
+	 background: aquamarine;
+}
+
+
+span{
+	color:white;
+   position: absolute;
+   top: 20px;
+   right:30px;
+   font-size:18px;
+   font-weight:600; 
+}
+.logo{
+  color: white;
+  display:block;
+  margin:0px 20px;
+  font-size:50px !important;
+}
+
+.two{
+	color: white;
+  
+}
