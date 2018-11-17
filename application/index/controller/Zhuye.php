@@ -96,12 +96,19 @@ class Zhuye extends \think\Controller{
         $uid = input('uid');
         $headT = db('vertify')->where("uid='$uid'")->find();
 
+        
         if ($headT['type'] == 1) {
             $headT['kecheng_num'] = db("kecheng")->where("uid=$uid and is_delete=2")->count();
             $headT['job_num'] = db("job")->where("uid=$uid")->count();
         }else{
             $headT['uinfo'] = db("user")->where("uid=$uid")->find();
         }
+        $headT['name'] = db("user")->where("uid=$uid")->value("username");
+        $headT['describtion'] = db("topic")->where("articleclassid=148 and authorid=$uid")->value("describtion"); 
+
+		if(!$headT['describtion']){
+			$headT['describtion'] = db("topic")->where("articleclassid=150 and authorid=$uid")->value("describtion"); 
+		}
         
         return json($headT);
     }

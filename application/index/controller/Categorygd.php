@@ -95,10 +95,14 @@ class Categorygd extends \think\Controller{
             $where['status'] =  1;
 			$where['type'] =  $role;
     	$grolist;
-    	//分四种情况，区域和类别都不为空、区域不为空、类别不为空、区域和类别都不为空。
- 	$where['name']=array('like','%'.$key.'%');
+		//分四种情况，区域和类别都不为空、区域不为空、类别不为空、区域和类别都不为空。
+		if($key){
+			$where['name']=array('like','%'.$key.'%');
 
-        $where['good_at_1']=array('like','%'.$search_cate.'%');
+		}
+		if ($search_cate) {
+       		 $where['good_at_1']=array('like','%'.$search_cate.'%');
+		}
     
     	if($area&&$classify && $area!='全部' && $classify!='全部'){
 
@@ -119,7 +123,7 @@ class Categorygd extends \think\Controller{
             // city : "广州市"district : "天河区"nation : "中国"province : "广东省"street : "天府路"street_number : "天府路1号"
         }
         $grolist=db("user")->alias("u")
-                ->field("u.uid,u.tximg,v.*")
+                ->field("u.uid,u.tximg,u.username,v.*")
                 ->join("vertify v","u.uid=v.uid")
                 ->where($where)->paginate(5)->each(function($item, $key){
                     $uid = $item['uid'];
@@ -128,7 +132,9 @@ class Categorygd extends \think\Controller{
                         $item['job_num'] = db("job")->where("uid=$uid")->count();
                     }else{
                         $item['uinfo'] = db("user")->where("uid=$uid")->find();
-                    }
+					}
+					$item['name'] = $item['username'];
+					
                     $item['plinfo'] = 
                      db("commont_list")->field ( 'sum(star) sum_s,count(id) c' )->where( array("pldx"=>$item['uid'],'status'=>2))->find();
 
@@ -153,8 +159,14 @@ class Categorygd extends \think\Controller{
 
         $where['status'] =  1;
         $where['type'] =  $role;
-        $where['name']=array('like','%'.$key.'%');
-    	$where['good_at_1']=array('like','%'.$search_cate.'%');
+		
+		if($key){
+			$where['name']=array('like','%'.$key.'%');
+		}
+		if ($search_cate) {
+       		 $where['good_at_1']=array('like','%'.$search_cate.'%');
+		}
+
     	if($area&&$classify && $area!='全部' && $classify!='全部'){
 
             $where['address'] = array('like','%'.$area.'%');
@@ -167,7 +179,7 @@ class Categorygd extends \think\Controller{
     	}
 
 		$grolist=db("user")->alias("u")
-        ->field("u.uid,u.tximg,v.*")
+        ->field("u.uid,u.tximg,u.username,v.*")
         ->join("vertify v","u.uid=v.uid")->where($where)->paginate(5)->each(function($item, $key){
                     $uid = $item['uid'];
                     if ($item['type'] == 1) {
@@ -175,7 +187,8 @@ class Categorygd extends \think\Controller{
                         $item['job_num'] = db("job")->where("uid=$uid")->count();
                     }else{
                         $item['uinfo'] = db("user")->where("uid=$uid")->find();
-                    }
+					}
+					$item['name'] = $item['username'];
                       $item['plinfo'] = 
                      db("commont_list")->field ( 'sum(star) sum_s,count(id) c' )->where( array("pldx"=>$item['uid'],'status'=>2))->find();       
 
