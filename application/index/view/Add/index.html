@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/basic/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/css/backstage.css"/>
+		<script src="__PUBLIC__/static/basic/bootstrap.min.js" ></script>
+		<script src="__PUBLIC__/static/basic/jquery-3.2.1.min.js" ></script>
+		<title></title>
+	</head>
+	<body>
+		{include file="nav"}
+		<div class="container">
+		   <div class="one_hang">
+		 	 <form action="{:url('Add/del_position')}" method="get">
+				<table class="table">
+				 	<tr>
+			            <th>轮播图片</th>
+			            <th><input class="btn btn-danger" type="submit" name="delete" value="删除" /></th>  
+			        </tr>
+				 	{foreach $lb_list as $value}
+			        <tr>
+			       <td ><img src="__PUBLIC__/uploads/{$value.image}"/></td>
+			       <td><input type="checkbox" name="del_index[]" value="{$value.id}" style="text-align: center;"></td>
+			        </tr>   
+			        {/foreach}
+		         </table>
+		       </form>  
+		       
+		        <form action="{:url('Add/del_position_two')}" method="get">
+				<table class="table">
+				 	<tr>
+			            <th>签到图片</th>
+			            <th><input class="btn btn-danger" type="submit" name="delete" value="删除" /></th>  
+			        </tr>
+				 	{foreach $qd_img_list as $value}
+			        <tr>
+			       <td ><img src="__PUBLIC__/uploads/{$value.image_qd}"/></td>
+			       <td><input type="checkbox" name="del_index[]" value="{$value.id}" style="text-align: center;"></td>
+			        </tr>   
+			        {/foreach}
+		         </table>
+		       </form>  
+		       
+		    </div>
+		    
+		       <form action="{:url('Add/del_index')}" method="get">
+				<table class="table">
+				 	<tr>
+			            <th>签到格言</th>
+			            <th><input class="btn btn-danger" type="submit" name="delete" value="删除" /></th>  
+			        </tr>
+				 	{foreach $qd_text as $value}
+			        <tr>
+			       <td ><div>{$value.text}</div></td>
+			       <td><input type="checkbox" name="del_index[]" value="{$value.id}" style="text-align: center;"></td>
+			        </tr>   
+			        {/foreach}
+		         </table>
+		       </form>  
+	     </div>
+	</body>
+</html>
+<style type="text/css">
+	img{
+		width: 70px;
+		height: 70px;
+	}
+   .one_hang{
+   	display: flex;
+   }	
+   .container{
+   	margin-bottom: 60px;
+   }
+  
+</style>

@@ -26,9 +26,16 @@ function saveImg($file_name) {
 		$imgPath = '/uploads/'.str_replace("\\", "/", $info->getSaveName());
 		require(ROOT_PATH.'/vendor/topthink/think-image/src/image/Exception.php');
 		require(ROOT_PATH.'/vendor/topthink/think-image/src/Image.php');
+<<<<<<< HEAD
 		$imgPaths = \think\Image::open(ROOT_PATH.'public'.DS.$imgPath);  
 		$imgPaths->water(ROOT_PATH.'public/static/sy.png',\think\Image::WATER_SOUTHEAST,50)->save(ROOT_PATH.'public/'.$imgPath); 
 		return json(['imgPath' => $imgPath]);
+=======
+		$imgPaths = \think\Image::open(ROOT_PATH.'public'.DS.$imgPath);  //要绝对路径
+		$imgPaths->water(ROOT_PATH.'public/static/sy.png',\think\Image::WATER_SOUTHEAST,50)->save(ROOT_PATH.'public/'.$imgPath); 
+		                             // 水印的图片                         位置      透明度           然后保持回去
+		return json(['imgPath' => $imgPath]);                          
+>>>>>>> c6ed26516cb3c84caf4c207e49d796ef5c62b2a6
 	} else {
 	    // 上传失败，获取错误信息
 		return json(['error' => $image->getError()]);

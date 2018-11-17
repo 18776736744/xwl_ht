@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/basic/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/css/backstage.css"/>
+		<script src="__PUBLIC__/static/basic/bootstrap.min.js" ></script>
+		<script src="__PUBLIC__/static/basic/jquery-3.2.1.min.js" ></script>
+		
+		<title></title>
+	</head>
+	<body>
+	{include file="nav"}
+	<div class="header">
+			 		上传首页轮播图片
+		</div>
+	    <div class="container">
+		   <form action="{:url('Add/save')}" enctype="multipart/form-data" method="post"> 	
+			  <input type="file" name="img" class="form-control" />
+			  <input type="text" name="text" class="form-control aa" 
+			  	placeholder="图片的路径，例如：/pages/index/box/c_details/c_details?id=19"  />
+			  <input type="submit" class="btn btn-primary tj"   value="添加"/>                   
+				
+				</form>
+			</div>	
+		    
+		
+	</body>
+</html>
+<script src="__PUBLIC__/static/basic/index.js" ></script>
+
+<style type="text/css">
+  .container{
+  	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 50px;
+  }
+  .tj{
+  	float: right;
+	margin-top: 27px;
+  	
+  }
+    .header{
+  	text-align: center;
+  	font-size: 20px;
+  	margin-top: 59px;
+  }
+  
+  .aa{
+  	margin-top: 20px;
+  }
+  
+</style>

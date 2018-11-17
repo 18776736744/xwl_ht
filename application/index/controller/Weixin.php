@@ -25,7 +25,7 @@ class Weixin extends \think\Controller{
 
 		$proid = $t1 . "_" . $t2 . "_" . $t3 . "_" . $t4 . "_" . $t5;
 
-       //支付需要的数据
+       //支付需要的数据，详情在微信支付的文档
          $params = [
             'body' => $theme_name,
             'out_trade_no' => $trade_time,

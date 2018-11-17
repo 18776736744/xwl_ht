@@ -223,7 +223,7 @@ class Ht extends \think\Controller{
 		$tid=input('tid');	          
 		$list=db('kecheng_likes')->where(["tid"=>$tid,"uid"=>$uid])->find();
 		if($list){
-			return json('2');
+			return json('..36.');
 		}
 		else{
 			return json('1');
@@ -273,6 +273,7 @@ class Ht extends \think\Controller{
     return json(['user'=>$list_user,'zp'=>$list_zp,'wz'=>$lit_wz,'kc'=>$list_kc]);
    }
    
+<<<<<<< HEAD
    public function qd_text(){
    	$list=db('text_qd')->select();
 	 return json($list);
@@ -283,6 +284,33 @@ class Ht extends \think\Controller{
    }
    public function lb_img(){
    	  $list=db('image')->select();
+=======
+   public function qd_text(){	
+   	$list=db('text_qd')->select();
+	$list_list=db('text_qd')->count();
+	 return json([$list,$list_list]);
+   }
+   
+   
+   
+   public function qd_img(){
+   	  $list=db('imgage_qd')->select();
+	  $list_list=db('imgage_qd')->count();
+	    foreach($list as $key=>$value){
+               	    $list[$key]['image_qd'] = str_replace('\\', '/',$value['image_qd']);
+               }
+	 return json([$list,$list_list]);
+   }
+
+
+
+
+   public function lb_img(){
+   	  $list=db('image')->select();
+	  foreach($list as $key=>$value){
+               	    $list[$key]['image'] = str_replace('\\', '/',$value['image']);
+               }
+>>>>>>> c6ed26516cb3c84caf4c207e49d796ef5c62b2a6
 	 return json($list);
    }
    
