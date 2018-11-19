@@ -10,7 +10,7 @@ class Smith extends \think\Controller{
 		$comm = db("kecheng_commont")->alias("c")
 					->field("c.*,u.username")
 					->join("user u","c.plr = u.uid")
-					->where("pldx = $id")
+					->where("pldx = $id and status=2")
 					->order("c.id desc")
 					->select();
 

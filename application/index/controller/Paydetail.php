@@ -31,7 +31,20 @@ function getType($money)
 {
 	switch ($money ['type']) {
 
-				
+		case 'tohuifangmsg' :
+
+			$money ['operation'] = '回访发短信';
+
+			$money ['money'] = "消费" . $money ['money'] . "财富值";
+
+
+
+
+			$money ['content'] = "家校反馈发短信消费";
+
+
+
+			break;
 				case 'topaykecheng' :
 
 					$money ['operation'] = '用户付费报名';

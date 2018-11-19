@@ -11,7 +11,9 @@ class Ht extends \think\Controller{
 		$id=input('id');
     	$list=db('kecheng')->where("id=$id")->find();
 		$list['chengnuo'] = json_decode($list['chengnuo'],true);
-		  return json($list);
+		$list['uname'] = db("vertify")->where("uid=".$list['uid'])->value("name");
+
+		return json($list);
 	}
 
      public function recruit_list(){  //查询分类列表
@@ -106,7 +108,9 @@ class Ht extends \think\Controller{
    }
     public function pur_class(){   //购课须知
     	 $xz=input('xz');
-    	$list=db('setting')->where("k='$xz'")->find();
+		$list=db('setting')->where("k='$xz'")->find();
+		$list['v'] = "<div>".str_replace("\r\n","</div><div>",$list['v'] )."</div>";
+
 		return json($list);
     }
     
@@ -272,19 +276,8 @@ class Ht extends \think\Controller{
     
     return json(['user'=>$list_user,'zp'=>$list_zp,'wz'=>$lit_wz,'kc'=>$list_kc]);
    }
+ 
    
-<<<<<<< HEAD
-   public function qd_text(){
-   	$list=db('text_qd')->select();
-	 return json($list);
-   }
-   public function qd_img(){
-   	  $list=db('imgage')->select();
-	 return json($list);
-   }
-   public function lb_img(){
-   	  $list=db('image')->select();
-=======
    public function qd_text(){	
    	$list=db('text_qd')->select();
 	$list_list=db('text_qd')->count();
@@ -309,8 +302,7 @@ class Ht extends \think\Controller{
    	  $list=db('image')->select();
 	  foreach($list as $key=>$value){
                	    $list[$key]['image'] = str_replace('\\', '/',$value['image']);
-               }
->>>>>>> c6ed26516cb3c84caf4c207e49d796ef5c62b2a6
+               } 
 	 return json($list);
    }
    

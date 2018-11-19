@@ -28,7 +28,7 @@ class Comment extends \think\Controller{
 		$list=db('articlecomment')->alias('a')
 		->join('user u','a.authorid=u.uid')
 		->field(['a.*','u.username','u.tximg'])
-		->where("a.tid=$tid")
+		->where("a.tid=$tid and a.status=1")
 		->order('id desc')->select();
 		return json($list);
 	 }
