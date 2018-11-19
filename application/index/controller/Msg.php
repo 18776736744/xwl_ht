@@ -57,4 +57,11 @@ class Msg extends \think\Controller
         }    
         return json($c_list);    
      }
+	 public function  state(){
+	 	$uid=input('uid');
+		$state=0;
+	 	$list=db('message')->where(['touid'=>$uid,'state'=>$state])->select();
+	 	return json($list);
+		 
+	 }
 }
