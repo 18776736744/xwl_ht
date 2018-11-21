@@ -146,6 +146,7 @@ class User extends \think\Controller{
 				->where("uid=".$infoUser['uid'])
 				->update([
 					'openid'=>$openid,
+					'phoneactive'=>1
 				]);
 
 			//如果用户表已经有了，则返回用户已存在标志
