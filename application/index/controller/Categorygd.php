@@ -299,8 +299,73 @@ class Categorygd extends \think\Controller{
 					]);
     }
 
-    
+	// 学校回访二级picker
+	public function getXxhf(){
+
+		
+		$uid = input('uid');
+		$where = " status < 2 ";
+		$where .= " and uid=" . $uid;
+
+		$first_cate = db("huifang")->field("id,uname,kemu,uid")->where($where)->order("id desc")->select();
+ 
+     
+    	$return_first_cate=[];
+    	$return_second_cate=$return_third_cate=[];
+		
+		foreach ($first_cate as $key => $value) {
+			$return_first_cate[$value['uname']]=$value['uname'];
+		}
+	 
+
+	    foreach ($first_cate as $key => $value) {
+			$return_second_cate[$value['uname']][]=$value['kemu'];
+		}
+ 
+	    return json(['first_cate'=>array_values($return_first_cate) ,
+	    			'second_cate'=>array_values($return_second_cate),
+	    			'third_cate'=>[]
+					]);
+    }
+    // 学校回访查询
+	public function getDjcx(){
+
+		
+		$uid = input('uid');
+		$where = " h.status < 2 ";
+		$where .= " and h.uid=" . $uid;
+
+	 
+
+
+		$first_cate = db("huifang")->alias("h")
+			->field(" h.uname,l.send_time")
+			->join("huifang_log l","h.id = l.hf_id")
+			->where($where)->order("h.id desc")->select();
+     
+    	$return_first_cate=[];
+    	$return_second_cate=$return_third_cate=[];
+		if($first_cate){
+			foreach ($first_cate as $key => $value) {
+				$return_first_cate[$value['uname']]=$value['uname'];
+			}
+		 
+	
+			foreach ($first_cate as $key => $value) {
+				$return_second_cate[$value['uname']][]="Send：".date("Y-m-d",$value['send_time']);
+			}
+		}
+		
+ 
+	    return json(['first_cate'=>array_values($return_first_cate) ,
+	    			'second_cate'=>array_values($return_second_cate),
+	    			'third_cate'=>[]
+					]);
+    }
 }
+
+
+
 //根据两点的经纬度计算两点间的距离
 function getDistance($lng1,$lat1,$lng2,$lat2){
     	$earthRadius = 6367000; //approximate radius of earth in meters 

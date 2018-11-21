@@ -66,7 +66,7 @@ class Identificate extends \think\Controller
  
 		$latitude=input('latitude');
 		$longitude=input('longitude');
-
+		
 		$f_data  = [
 			'type'=>$type,
 			'uid'=>$uid,
@@ -83,6 +83,35 @@ class Identificate extends \think\Controller
 			db('vertify')->where("uid=$uid")->update($f_data);
 		}else{
 			db('vertify')->insert($f_data);
+		}
+		db("user_category")->where("uid=$uid")->delete();
+		if($good_at){
+			$cid = db("category")->where("name='$good_at'")->value("id");
+			if($cid){
+				db("user_category")->insert([
+					"uid"=>$uid,
+					"cid"=>$cid
+				]);
+			}
+			
+		}
+		if($good_at_1){
+			$cid = db("category")->where("name='$good_at_1'")->value("id");
+			if($cid){
+				db("user_category")->insert([
+					"uid"=>$uid,
+					"cid"=>$cid
+				]);
+			}
+		}
+		if($good_at_2){
+			$cid = db("category")->where("name='$good_at_2'")->value("id");
+			if($cid){
+				db("user_category")->insert([
+					"uid"=>$uid,
+					"cid"=>$cid
+				]);
+			}
 		}
 		return json([1]);
 	}
