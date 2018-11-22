@@ -44,18 +44,18 @@ class Kecheng extends \think\Controller
             # code...
             $lists = db("kecheng")
                 ->where("uid=$uid")
-                ->field("kecheng_name title,id,add_time viewtime,start_time,money")
+                ->field("kecheng_name title,id,add_time viewtime,start_time,money,is_delete")
                 ->order('id desc')
                 ->select();
         }else if(!empty($uid)&&!empty($id)){
             $lists = db("kecheng")
                 ->where(['id'=>$id,'uid'=>$uid])
-                ->field("kecheng_name title,id,add_time viewtime,start_time,money")
+                ->field("kecheng_name title,id,add_time viewtime,start_time,money,is_delete")
                 ->order('id desc')
                 ->select();
         }else{
             $lists = db("kecheng")
-                ->field("kecheng_name title,id,add_time viewtime,start_time,money")
+                ->field("kecheng_name title,id,add_time viewtime,start_time,money,is_delete")
                 ->order('id desc')
                 ->select();
         }
@@ -67,7 +67,7 @@ class Kecheng extends \think\Controller
         $id = input('id');
         $res = db("kecheng")
                 ->where("id=$id")
-                ->delete();
+                ->update(["is_delete"=>1]);
         return json($res);
     }
 

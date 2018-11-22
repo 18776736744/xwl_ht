@@ -13,9 +13,9 @@ class Index extends \think\Controller
     public function topic(){
         $type = input('type_');
         if(!empty($type)){
-            $topData = db('topic')->order('id desc')->limit('0,5')->select();
+            $topData = db('topic')->where("state=1")->order('id desc')->limit('0,5')->select();
         }else{
-            $topData = db('topic')->order('id desc')->paginate(6);
+            $topData = db('topic')->where("state=1")->order('id desc')->paginate(6);
         }
     	return json($topData);
     }
@@ -23,7 +23,7 @@ class Index extends \think\Controller
     public function job(){
     	if(empty(input('type_'))){
     		$jobs = db('job')->alias('j')->join('user u','j.uid=u.uid')
-    		->field('j.*,u.username,u.tximg')->order('id desc')->limit(0,5)->select();
+    		->field('j.*,u.username,u.tximg') ->order('id desc')->limit(0,5)->select();
     		$job=[];
 
     		foreach ( $jobs as $question ) {

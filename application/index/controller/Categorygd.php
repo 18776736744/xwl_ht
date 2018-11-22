@@ -100,20 +100,46 @@ class Categorygd extends \think\Controller{
 			$where['name']=array('like','%'.$key.'%');
 
 		}
-		if ($search_cate) {
-       		 $where['good_at_1']=array('like','%'.$search_cate.'%');
+
+		if($search_cate || $classify){
+			$cnname = $classify?$classify:$search_cate;
+			$allcate = db("category")->select();
+			$ccid = db("category")->where("name='$cnname'")->value("id");
+			$child_data = get_all_child($allcate,$ccid);
+			if($child_data){
+				$ccid = implode(",",array_values($child_data));
+			}
+			$cuid_a = db("user_category")->field("uid")->where("cid in (".$ccid.")")->select();
+			$uids = "";
+			if ($cuid_a) {
+				$temp_uid_a= [];
+				foreach ($cuid_a as $key => $value) {
+					$temp_uid_a[]=$value['uid'];
+				}
+				$uids=implode(",",array_values($temp_uid_a));
+			}
+			
 		}
+
+		if ($search_cate) {
+       		 $where['u.uid']=array('in',$uids);
+			
+		 
+		}
+
     
     	if($area&&$classify && $area!='全部' && $classify!='全部'){
 
     		$where['address'] = array('like','%'.$area.'%');
-			$where['good_at'] = array('like','%'.$classify.'%');
+			$where['u.uid']=array('in',$uids);
+			 
     		
     	}else if($area && $area!='全部'){
             $where['address'] = array('like','%'.$area.'%');
     		 
     	}else if($classify && $classify!='全部'){
-    		$where['good_at']=array('like','%'.$classify.'%');
+			$where['u.uid']=array('in',$uids);
+    		 
     		 
     	}
 
@@ -163,21 +189,52 @@ class Categorygd extends \think\Controller{
 		if($key){
 			$where['name']=array('like','%'.$key.'%');
 		}
-		if ($search_cate) {
-       		 $where['good_at_1']=array('like','%'.$search_cate.'%');
+		if($search_cate || $classify){
+			$cnname = $classify?$classify:$search_cate;
+			$allcate = db("category")->select();
+			$ccid = db("category")->where("name='$cnname'")->value("id");
+			$child_data = get_all_child($allcate,$ccid);
+			if($child_data){
+				$ccid = implode(",",array_values($child_data));
+			}
+			$cuid_a = db("user_category")->field("uid")->where("cid in (".$ccid.")")->select();
+			$uids = "";
+			if ($cuid_a) {
+				$temp_uid_a= [];
+				foreach ($cuid_a as $key => $value) {
+					$temp_uid_a[]=$value['uid'];
+				}
+				$uids=implode(",",array_values($temp_uid_a));
+			}
+			
 		}
 
+		if ($search_cate) {
+       		 $where['u.uid']=array('in',$uids);
+			
+		 
+		}
+
+    
     	if($area&&$classify && $area!='全部' && $classify!='全部'){
 
-            $where['address'] = array('like','%'.$area.'%');
-			$where['good_at'] = array('like','%'.$classify.'%');
+    		$where['address'] = array('like','%'.$area.'%');
+			$where['u.uid']=array('in',$uids);
+			 
     		
     	}else if($area && $area!='全部'){
             $where['address'] = array('like','%'.$area.'%');
+    		 
     	}else if($classify && $classify!='全部'){
-    		$where['good_at']=array('like','%'.$classify.'%');
+			$where['u.uid']=array('in',$uids);
+    		 
+    		 
     	}
-
+		if (empty($area)) {
+            $cur_area = json_decode(input('cur_area'),true);
+            $where['address'] = array('like','%'. $cur_area['province'].'%');
+            // city : "广州市"district : "天河区"nation : "中国"province : "广东省"street : "天府路"street_number : "天府路1号"
+        }
 		$grolist=db("user")->alias("u")
         ->field("u.uid,u.tximg,u.username,v.*")
         ->join("vertify v","u.uid=v.uid")->where($where)->paginate(5)->each(function($item, $key){
