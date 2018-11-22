@@ -6,8 +6,8 @@ class Commentmy extends Controller{
 
 	public function comment()
 	{
-		
-		$comment_list =db('commont_list')->alias('a')->join('user b','b.uid=a.plr')
+		$uid=input('uid');
+		$comment_list =db('commont_list')->where("pldx=$uid")->alias('a')->join('user b','b.uid=a.plr')
 		->field('a.add_time,a.picture,a.info,b.username,b.tximg,a.star')->order('add_time desc')->select();
 
 		foreach ($comment_list as $key => $value) {

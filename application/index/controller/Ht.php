@@ -179,14 +179,20 @@ class Ht extends \think\Controller{
 		
 	}
 
-  public function my_collection(){
+  public function my_collection(){   //收藏页面查看文章
   	  $uid=input('uid');
 	  $list=db('topic_likes')->where("l.uid=$uid")->alias('l')->join('topic t','l.tid=t.id')
-	  ->order('l.id desc')->field('t.title,t.image,t.author,t.id')->select();
+	  ->order('l.id desc')->field('t.title,t.image,t.author,t.id,t.viewtime')->select();
+	  
+	  foreach($list as $key=>$value){
+	  	 $list[$key]['viewtime'] = date('Y-m-d',$value['viewtime']);
+		  //思路：等号左边 就像小程序的 后台拿到数据点进去一样，$key就是数组的第几个，右边就是替换
+	  }
+	  
 	  
 	  return json($list);
   }
-  public function my_recruit(){
+  public function my_recruit(){   //收藏页面查看课程
   	  $uid=input('uid');
 	 
 	  $list=db('job_likes')->where("l.uid=".$uid)
@@ -235,10 +241,10 @@ class Ht extends \think\Controller{
 		
 	}
   
-    public function my_curriculum(){
+    public function my_curriculum(){  //在收藏查看课程
   	  $uid=input('uid');
 	  $list=db('kecheng_likes')->where("l.uid=$uid")->alias('l')->join('kecheng k','l.tid=k.id')
-	  ->order('l.id desc')->field('k.kecheng_name,k.image,k.money,k.school,k.id')->select();
+	  ->order('l.id desc')->field('k.kecheng_name,k.image,k.money,k.school,k.id,k.start_time')->select();
 	  
 	  return json($list);
   }   
@@ -306,7 +312,13 @@ class Ht extends \think\Controller{
 	 return json($list);
    }
    
-  
+     public function xieyi(){//校外链平台使用协议
+      $id=7;
+	  $list=db('note')->where("id=$id")->find();
+	  return json($list);
+   	
+   } 
 }
-  
+   
+   
 ?>
