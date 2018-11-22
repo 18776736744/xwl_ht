@@ -25,7 +25,7 @@ function saveImg($file_name) {
 	    // 成功上传，获取文件名
 		$imgPath = '/uploads/'.str_replace("\\", "/", $info->getSaveName());
 		require(ROOT_PATH.'/vendor/topthink/think-image/src/image/Exception.php');
-		require(ROOT_PATH.'/vendor/topthink/think-image/src/Image.php');
+		require(ROOT_PATH.'/vendor/topthink/think-image/src/Image.php'); 
 
 		$imgPaths = \think\Image::open(ROOT_PATH.'public'.DS.$imgPath);  //要绝对路径
 		$imgPaths->water(ROOT_PATH.'public/static/sy.png',\think\Image::WATER_SOUTHEAST,50)->save(ROOT_PATH.'public/'.$imgPath); 
@@ -38,7 +38,16 @@ function saveImg($file_name) {
 	}    
 }
 
-
+function get_all_child($array,$id){
+    $arr = array();
+    foreach($array as $v){
+        if($v['pid'] == $id){
+            $arr[] = $v['id'];
+            $arr = array_merge($arr,get_all_child($array,$v['id']));
+        };
+    };
+    return $arr;
+}
 /**
  * 请求接口返回内容
  * @param  string $url [请求的URL地址]
