@@ -112,6 +112,14 @@ function getType($money)
 
 					break;
 
+				case 'tid':
+						
+					$_uid = $money['fromuid'];
+
+					$money ['money'] = "被打赏" . $money ['money'] . "元";
+
+					$money['operation'] = '文章打赏';
+					break;
 				case 'payarticle' :
 
 					$money ['operation'] = '用户付费阅读';

@@ -409,7 +409,7 @@ class Categorygd extends \think\Controller{
 		 
 	
 			foreach ($first_cate as $key => $value) {
-				$return_second_cate[$value['uname']][]="Send：".date("Y-m-d",$value['send_time']);
+				$return_second_cate[$value['uname']][]="Send:".date("Y-m-d",$value['send_time']);
 			}
 		}
 		

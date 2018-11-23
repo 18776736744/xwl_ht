@@ -1,51 +1,98 @@
 <?php
 namespace app\index\controller;
+
 use think\Db;
 
 
 class Topic extends \think\Controller
 {
     public function index()
-    {	
+    {
 
     }
     // 获取发布文章
-    public function topic_get(){
-    	$topData = db('topic')->alias('t')
-                    ->field('t.*')->join('vertify v','v.type='.input('type_'))
-                    ->where("t.authorid=v.uid")
-                    ->select();
-                    return json($topData);
+    public function topic_get()
+    {
+        $topData = db('topic')->alias('t')
+            ->field('t.*')->join('vertify v', 'v.type=' . input('type_'))
+            ->where("t.authorid=v.uid")
+            ->select();
+        return json($topData);
     }
     //我的文章
-    public function myTopic(){
-        $mytop = db('topic')->where("authorid=".input('authorid'))->select();
+    public function myTopic()
+    {
+        $mytop = db('topic')->where("authorid=" . input('authorid'))->select();
         return json($mytop);
     }
     // 获取文章详情
-    public function getTopic(){
+    public function getTopic()
+    {
         $id = input('id');
         $xxtops = db('topic')->field("id,title,describtion,image,author,authorid,views,articleclassid,viewtime,likes,articles,price,ispc,tximg")->where("id=$id")->select();
-        foreach ( $xxtops as $question ) {
-                $question['viewtime'] = date('Y-m-d',$question['viewtime']);
-                $question['tximg'] = db("user")->where("uid=".$question['authorid'])->value("tximg");
-                $xxtop[] = $question;
-				
-            }
+        foreach ($xxtops as $question) {
+            $question['viewtime'] = date('Y-m-d', $question['viewtime']);
+            $question['tximg'] = db("user")->where("uid=" . $question['authorid'])->value("tximg");
+            $xxtop[] = $question;
+
+        }
         if ($xxtop) {
             return json($xxtop);
-        }else{
+        } else {
             return json("2");
         }
     }
     // 获取机构或教师总数量
-    public function count_topic(){
+    public function count_topic()
+    {
         $type = input('type_');
-        if(!empty($type)){
+        if (!empty($type)) {
             $topCount = db('vertify')
-            ->where('type='.$type)
-            ->count();
+                ->where('type=' . $type)
+                ->count();
             return json($topCount);
         }
+    }
+
+    function getlist_bytype()
+    { 
+        $recargelist = array();
+        $typeid = input("id");
+        $list_pay = db("paylog")->where(" type='tid' and typeid=$typeid and type not in('paysite_zhuanjia','paysite_xuanshang','paysite_toukan')  ")->order("time desc")->select();
+
+     
+        $recargelist = [];
+        foreach ($list_pay as $money) {
+
+            $money['time'] = date('Y-m-d H:i',$money['time']);
+
+
+            if ($money['fromuid'] == 0) {
+
+                $money['operation'] = '网友打赏' . $money['money'] . "元" . '-' . $money['time'];
+ 
+
+            } else {
+
+                $_uid = $money['fromuid'];
+
+                $user = db("user")->where("uid='$_uid'")->find();
+
+                $money['operation'] = $user['username'] . '打赏' . $money['money'] . "元" . '-' . $money['time'];
+ 
+
+            }
+
+
+
+
+
+
+            $recargelist[] = $money;
+
+        }
+
+        return json($recargelist);
+
     }
 }

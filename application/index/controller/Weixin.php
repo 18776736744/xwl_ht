@@ -2,7 +2,8 @@
 namespace app\index\controller;
 class Weixin extends \think\Controller{
 
-	   //充值
+      //充值
+      // 通知是去的pc的notify
 	public function chongzhi(){
  		
  		$price = input("price");
