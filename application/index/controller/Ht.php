@@ -233,7 +233,7 @@ class Ht extends \think\Controller{
 		$tid=input('tid');	          
 		$list=db('kecheng_likes')->where(["tid"=>$tid,"uid"=>$uid])->find();
 		if($list){
-			return json('..36.');
+			return json('2');
 		}
 		else{
 			return json('1');
@@ -244,7 +244,8 @@ class Ht extends \think\Controller{
     public function my_curriculum(){  //在收藏查看课程
   	  $uid=input('uid');
 	  $list=db('kecheng_likes')->where("l.uid=$uid")->alias('l')->join('kecheng k','l.tid=k.id')
-	  ->order('l.id desc')->field('k.kecheng_name,k.image,k.money,k.school,k.id,k.start_time')->select();
+	  ->join('user u','l.uid=u.uid')->order('l.id desc')
+	  ->field('k.kecheng_name,k.image,k.money,k.school,k.id,k.start_time,u.username')->select();
 	  
 	  return json($list);
   }   
