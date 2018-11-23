@@ -5,6 +5,12 @@ class Categorygd extends \think\Controller{
     // 三级联动
     public function sjld()
     {
+		$first_str = input('first_str');
+		if ($first_str==1) {
+			$first_str = '请选择';
+		}else{
+			$first_str = '全部';
+		}
          // 要把一级分类全部查出来
     	$first_cate =  db("category")->where('grade=1')->order('id asc')->select();
     	$a =  db("category")->where('grade=1')->field('name')->order('id asc')->select();
@@ -32,7 +38,7 @@ class Categorygd extends \think\Controller{
 	    for($i=0;$i<count($first_cate);$i++){
             if ($n==0) {
                 # code...
-                $return_first_cate[$n]='全部';
+                $return_first_cate[$n]=$first_str;
             ++$n;
 
             } 
@@ -49,7 +55,7 @@ class Categorygd extends \think\Controller{
 	    		for($j=0;$j<count($second_cate[$i]);$j++){
                     if ($e==0) {
                         # code...
-                        $return_second_cate[$e][$j]='全部';
+                        $return_second_cate[$e][$j]=$first_str;
                         ++$e;
                     }
 	    			$return_second_cate[$e][$j]=$second_cate[$i][$j]['name'];
@@ -69,7 +75,7 @@ class Categorygd extends \think\Controller{
 	    				for($k=0;$k<count($third_cate[$i][$j]);$k++){
                              if ($t==0) {
                                     # code...
-                                   $return_third_cate[$t][$j][$k]='全部';
+                                   $return_third_cate[$t][$j][$k]=$first_str;
                                     ++$t;
                                 }
 	    					$return_third_cate[$t][$j][$k]=$third_cate[$i][$j][$k]['name'];
