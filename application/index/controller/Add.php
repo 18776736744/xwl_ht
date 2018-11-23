@@ -94,7 +94,7 @@ class Add extends \think\Controller{
 	  	  	  
 	  	     foreach($_GET['del_index'] as $value){
 	  	     	
-	  	     	$picture=db('imgage')->where("id=$value")->value('image_qd');
+	  	     	$picture=db('imgage_qd')->where("id=$value")->value('image_qd');
 				$img_url=ROOT_PATH."/public/uploads/".$picture;
 				unlink($img_url);
 				

@@ -196,6 +196,7 @@ class Ht extends \think\Controller
 
 	}
 
+<<<<<<< HEAD
 	public function my_collection()
 	{
 		$uid = input('uid');
@@ -249,6 +250,65 @@ class Ht extends \think\Controller
 		if ($list) {
 			return json('..36.');
 		} else {
+=======
+  public function my_collection(){   //收藏页面查看文章
+  	  $uid=input('uid');
+	  $list=db('topic_likes')->where("l.uid=$uid")->alias('l')->join('topic t','l.tid=t.id')
+	  ->order('l.id desc')->field('t.title,t.image,t.author,t.id,t.viewtime')->select();
+	  
+	  foreach($list as $key=>$value){
+	  	 $list[$key]['viewtime'] = date('Y-m-d',$value['viewtime']);
+		  //思路：等号左边 就像小程序的 后台拿到数据点进去一样，$key就是数组的第几个，右边就是替换
+	  }
+	  
+	  
+	  return json($list);
+  }
+  public function my_recruit(){   //收藏页面查看课程
+  	  $uid=input('uid');
+	 
+	  $list=db('job_likes')->where("l.uid=".$uid)
+	  ->alias('l')
+	  ->join('job j','l.tid=j.id')
+	  ->join('user u',"u.uid=l.uid")->order('l.id desc')
+	  ->field('j.id,j.category,j.money,j.address,j.people,j.xueli,j.people,j.people,u.username,u.tximg')
+	  ->select();
+	  
+	  
+	  
+	  
+	  return json($list);
+  } 
+  	public function fabulous_curriculum(){    //课程收藏
+		$uid=input('uid');
+		$tid=input('tid');
+		$time=time();
+		
+		$list_see=db('kecheng_likes')->where(["tid"=>$tid,"uid"=>$uid])->find();
+		
+		if($list_see){
+		db('kecheng_likes')->where(["tid"=>$tid,"uid"=>$uid])->delete();
+		db('kecheng')->where("id=$tid")->setDec('likes');
+		 return json("1");
+		}
+		else{
+		db('kecheng_likes')->insert(['uid'=>$uid,'tid'=>$tid,'time'=>$time]);
+		db('kecheng')->where("id=$tid")->setInc('likes');
+		 return json("2");
+		}
+	}
+	
+	
+	
+	public function see_curriculum(){   //查询课程收藏
+		$uid=input('uid');
+		$tid=input('tid');	          
+		$list=db('kecheng_likes')->where(["tid"=>$tid,"uid"=>$uid])->find();
+		if($list){
+			return json('2');
+		}
+		else{
+>>>>>>> 8e99328e5ccf06070f1c2b9a11e5a31dbad045f4
 			return json('1');
 		}
 
@@ -262,6 +322,7 @@ class Ht extends \think\Controller
 
 		return json($list);
 	}
+<<<<<<< HEAD
 
 	public function search()
 	{   //搜索
@@ -285,10 +346,44 @@ class Ht extends \think\Controller
 		foreach ($lit_wz as $key => $lit_wz_xg) {
 			$lit_wz[$key]['viewtime'] = date('Y-m-d', $lit_wz_xg['viewtime']);
 		}        
+=======
+  
+    public function my_curriculum(){  //在收藏查看课程
+  	  $uid=input('uid');
+	  $list=db('kecheng_likes')->where("l.uid=$uid")->alias('l')->join('kecheng k','l.tid=k.id')
+	  ->join('user u','l.uid=u.uid')->order('l.id desc')
+	  ->field('k.kecheng_name,k.image,k.money,k.school,k.id,k.start_time,u.username')->select();
+	  
+	  return json($list);
+  }   
+   
+   public function  search(){   //搜索
+   	$content=input('search');
+	$list_user=db('user')->where('username','like',"%".$content."%")->alias('u')
+	                     ->join('vertify v','u.uid=v.uid' )
+	                     ->field('u.*,v.type,v.id')->select();  //用户
+	
+	
+	
+	$list_zp=db('job')->where('category','like',"%".$content."%")->alias('j')
+	                  ->join('user u','j.uid=u.uid' )
+	                  ->field('j.*,u.username,u.tximg')->order('j.id desc')->select(); //招聘
+	
+	
+	
+    $lit_wz=db('topic')->where('title','like',"%".$content."%")->alias('t')
+                       ->join('user u','t.authorid=u.uid' )
+                       ->field('t.*,u.username')->order('t.id desc')->select(); //文章
+                       
+               foreach($lit_wz as $key=>$lit_wz_xg){
+               	    $lit_wz[$key]['viewtime'] = date('Y-m-d',$lit_wz_xg['viewtime']);
+               }        
+>>>>>>> 8e99328e5ccf06070f1c2b9a11e5a31dbad045f4
                //错误的思路
                //$lit_wz_xg['viewtime'] = date('Y-m-d',$lit_wz_xg['viewtime']);
 			   //想的是替换掉原来的，在把这个  $lit_wz_xg ==  $lit_wz 然后我就卡住了，
 			   //以为我不知道怎么让前面等于后面 而且viewtime谁=谁不知道
+<<<<<<< HEAD
 
 
 
@@ -333,4 +428,53 @@ class Ht extends \think\Controller
 
 }
 
+=======
+                       
+					   
+					   
+                       
+    $list_kc=db('kecheng')->where('kecheng_name','like',"%".$content."%")->select(); //课程                   
+    
+    return json(['user'=>$list_user,'zp'=>$list_zp,'wz'=>$lit_wz,'kc'=>$list_kc]);
+   }
+ 
+   
+   public function qd_text(){	
+   	$list=db('text_qd')->select();
+	$list_list=db('text_qd')->count();
+	 return json([$list,$list_list]);
+   }
+   
+   
+   
+   public function qd_img(){
+   	  $list=db('imgage_qd')->select();
+	  $list_list=db('imgage_qd')->count();
+	    foreach($list as $key=>$value){
+               	    $list[$key]['image_qd'] = str_replace('\\', '/',$value['image_qd']);
+               }
+	 return json([$list,$list_list]);
+   }
+
+
+
+
+   public function lb_img(){
+   	  $list=db('image')->select();
+	  foreach($list as $key=>$value){
+               	    $list[$key]['image'] = str_replace('\\', '/',$value['image']);
+               } 
+	 return json($list);
+   }
+   
+     public function xieyi(){//校外链平台使用协议
+      $id=7;
+	  $list=db('note')->where("id=$id")->find();
+	  return json($list);
+   	
+   } 
+}
+   
+   
+>>>>>>> 8e99328e5ccf06070f1c2b9a11e5a31dbad045f4
 ?>

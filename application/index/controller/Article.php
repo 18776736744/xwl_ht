@@ -67,6 +67,7 @@ class Article extends \think\Controller
         $lists = db("topic")
                 ->where("id=$id")
                 ->delete();
+		return($lists);	
     }
 
     public function info()
