@@ -34,7 +34,7 @@ class Msg extends \think\Controller
 
         foreach ($msg_list as $key => $value) {
             $msg_list[$key]['time'] = date('Y-m-d,H:i:s',$value['time']);
-            $msg_list[$key]['content'] = strip_tags($value['content']);
+            $msg_list[$key]['content'] = str_replace("点击查看","", strip_tags($value['content']));
         }    
         return json($msg_list);    
      }

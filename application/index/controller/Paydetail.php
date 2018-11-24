@@ -103,7 +103,7 @@ function getType($money)
 
 					$money ['money'] = "支出" . $money ['money'] . "元";
 
-					$mod = db("topic")->where ("id=". $money ['typeid'] );
+					$mod = db("topic")->where ("id=". $money ['typeid'] )->find();
 
 
 					$money ['content'] = "您付费阅读了文章：" . $mod ['title'] ;
@@ -130,7 +130,7 @@ function getType($money)
 
 					
 
-					$mod = db("topic")->where ("id=". $money ['typeid'] );
+					$mod = db("topic")->where ("id=". $money ['typeid'] )->find();
 
 
 					$money ['content'] = "用户付费阅读了您的文章：" . $mod ['title'] ;

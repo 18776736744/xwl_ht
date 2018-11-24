@@ -103,6 +103,7 @@ class Zhuye extends \think\Controller{
         }else{
             $headT['uinfo'] = db("user")->where("uid=$uid")->find();
         }
+        $headT['rzname'] = $headT['name'];
         $headT['name'] = db("user")->where("uid=$uid")->value("username");
         $headT['describtion'] = db("topic")->where("articleclassid=148 and authorid=$uid")->value("describtion"); 
 
