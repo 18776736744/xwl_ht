@@ -71,7 +71,8 @@ class Zhuye extends \think\Controller{
             ->join("user u","c.plr = u.uid")
             ->order("c.id desc")
             ->where("pldx='$uid' and status =2")->paginate(5);
-
+			
+	
             
         return json($u_list);
     }
