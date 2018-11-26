@@ -70,10 +70,14 @@ class Zhuye extends \think\Controller{
             ->field("c.*,u.username,u.tximg")
             ->join("user u","c.plr = u.uid")
             ->order("c.id desc")
-            ->where("pldx='$uid' and status =2")->paginate(5);
+            ->where("pldx='$uid' and status =2")->paginate(5)
+			->each(
+			function($item){
+				$item['add_time'] = date("Y-m-d",$item['add_time']);
+				return $item;
+			}
+			  );
 			
-	
-            
         return json($u_list);
     }
     // 机构课程列表
