@@ -258,14 +258,14 @@ class Ht extends \think\Controller
 
 	}
 
-	public function my_curriculum()
-	{
-		$uid = input('uid');
-		$list = db('kecheng_likes')->where("l.uid=$uid")->alias('l')->join('kecheng k', 'l.tid=k.id')
-			->order('l.id desc')->field('k.kecheng_name,k.image,k.money,k.school,k.id')->select();
-
-		return json($list);
-	}
+//	public function my_curriculum()
+//	{
+//		$uid = input('uid');
+//		$list = db('kecheng_likes')->where("l.uid=$uid")->alias('l')->join('kecheng k', 'l.tid=k.id')
+//			->order('l.id desc')->field('k.kecheng_name,k.image,k.money,k.school,k.id')->select();
+//
+//		return json($list);
+//	}
   
     public function my_curriculum(){  //在收藏查看课程
   	  $uid=input('uid');
@@ -345,6 +345,22 @@ class Ht extends \think\Controller
 	  return json($list);
    	
    } 
+   public function evaluate(){
+   	 $pldx=input('pldx');
+	 $plr=input('plr');
+	 $star=input('star');
+	 $info=input('info');
+	 $picture=input('picture');
+	 $is_true_name=input('is_true_name');
+	 $add_time=time();
+	 $xingzhi=input('xingzhi');
+	 $list=db('commont_list')->insert([
+	   'pldx'=>$pldx,'plr'=>$plr,'star'=>$star,'info'=>$info,
+	   'picture'=>$picture,'is_true_name'=>$is_true_name,'add_time'=>$add_time,
+	   'xingzhi'=>$xingzhi
+	 ]);
+	   return json($list);
+   }	 
 }
    
    
