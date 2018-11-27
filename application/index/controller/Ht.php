@@ -345,7 +345,7 @@ class Ht extends \think\Controller
 	  return json($list);
    	
    } 
-   public function evaluate(){
+   public function evaluate(){  //机构和老师详情页面的评价
    	 $pldx=input('pldx');
 	 $plr=input('plr');
 	 $star=input('star');
@@ -360,7 +360,13 @@ class Ht extends \think\Controller
 	   'xingzhi'=>$xingzhi
 	 ]);
 	   return json($list);
-   }	 
+   }
+   public function reply(){
+   	   $id=input('id');
+	   $content=input('content');
+	   $list=db('commont_list')->where("id=$id")->update(['reply'=>$content]);
+	   return json($list);
+   } 
 }
    
    
