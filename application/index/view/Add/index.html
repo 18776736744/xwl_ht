@@ -12,22 +12,24 @@
 		{include file="nav"}
 		<div class="container">
 		   <div class="one_hang">
-		 	 <form action="{:url('Add/del_position')}" method="get">
+		 	 <form action="https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/Add/del_position" method="POST">
 				<table class="table">
 				 	<tr>
 			            <th>轮播图片</th>
+			            <th>轮播地址</th>
 			            <th><input class="btn btn-danger" type="submit" name="delete" value="删除" /></th>  
 			        </tr>
 				 	{foreach $lb_list as $value}
 			        <tr>
 			       <td ><img src="__PUBLIC__/uploads/{$value.image}"/></td>
+			       <td >{$value.address}</td>
 			       <td><input type="checkbox" name="del_index[]" value="{$value.id}" style="text-align: center;"></td>
 			        </tr>   
 			        {/foreach}
 		         </table>
 		       </form>  
 		       
-		        <form action="{:url('Add/del_position_two')}" method="get">
+		        <form action="https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/Add/del_position_two" method="POST">
 				<table class="table">
 				 	<tr>
 			            <th>签到图片</th>
@@ -44,7 +46,7 @@
 		       
 		    </div>
 		    
-		       <form action="{:url('Add/del_index')}" method="get">
+		       <form action="https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/Add/del_index" method="POST">
 				<table class="table">
 				 	<tr>
 			            <th>签到格言</th>
