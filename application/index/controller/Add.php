@@ -31,8 +31,11 @@ class Add extends \think\Controller{
 		   if($file !=''){
 		   	 $info = $file->move(ROOT_PATH.'public'.DS.'uploads');  //一张图片储存的地址
 			   	 if($info){
-			   	 	$list=db('image')->insert(["image"=>$info->getSaveName()]); //上传数据库地址
-			   	 	 $this->success('添加成功',url('index'));
+			   	 	$list=db('image')->insert([
+							"image"=>$info->getSaveName(),
+							"address"=>input("text")
+							]); //上传数据库地址
+			   	 	 $this->success('添加成功','https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/add');
 			   	 }
 		   }
 		   else{
@@ -48,7 +51,7 @@ class Add extends \think\Controller{
 		   	 $info = $file->move(ROOT_PATH.'public'.DS.'uploads');  //一张图片储存的地址
 			   	 if($info){
 			   	 	$list=db('imgage_qd')->insert(["image_qd"=>$info->getSaveName()]); //上传数据库地址
-			   	 	 $this->success('添加成功',url('index'));
+			   	 	 $this->success('添加成功','https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/add');
 			   	 }
 		   }
 		   else{
@@ -60,7 +63,7 @@ class Add extends \think\Controller{
 		$text=input('text');
 		if($text){
 			$list=db('text_qd')->insert(['text'=>$text]);
-			$this->success('添加成功',url('index'));
+			$this->success('添加成功','https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/add');
 		}
 		else{
 			
@@ -70,9 +73,9 @@ class Add extends \think\Controller{
 	  
 	  
 	  public function del_position(){  //删除轮播
-	  	  if(!empty($_GET)){
+	  	  if(!empty($_POST)){
 	  	  	  
-	  	     foreach($_GET['del_index'] as $value){
+	  	     foreach($_POST['del_index'] as $value){
 	  	     	
 	  	     	$picture=db('image')->where("id=$value")->value('image');
 				$img_url=ROOT_PATH."/public/uploads/".$picture;
@@ -80,19 +83,19 @@ class Add extends \think\Controller{
 				
 				db('image')->where("id=$value")->delete();
 	  	     }	
-			 $this->success('删除成功',url('index'));    // 成功返回
+			 $this->success('删除成功','https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/add');    // 成功返回
 			
 			
 			
 	  	 }
 		else{
-			$this->error("请选择删除商品");
+			$this->error("请选择");
 		}
     }
 	   public function del_position_two(){  //删除签到的图片
-	  	  if(!empty($_GET)){
+	  	  if(!empty($_POST)){
 	  	  	  
-	  	     foreach($_GET['del_index'] as $value){
+	  	     foreach($_POST['del_index'] as $value){
 	  	     	
 	  	     	$picture=db('imgage_qd')->where("id=$value")->value('image_qd');
 				$img_url=ROOT_PATH."/public/uploads/".$picture;
@@ -100,7 +103,7 @@ class Add extends \think\Controller{
 				
 				db('image')->where("id=$value")->delete();
 	  	     }	
-			 $this->success('删除成功',url('index'));    // 成功返回
+			 $this->success('删除成功','https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/add');    // 成功返回
 			
 			
 			
@@ -110,11 +113,11 @@ class Add extends \think\Controller{
 		}
     }
 	  public function del_index(){
-	  	 if(!empty($_GET)){
-	  	     foreach($_GET['del_index'] as $value){
+	  	 if(!empty($_POST)){
+	  	     foreach($_POST['del_index'] as $value){
 				db('text_qd')->where("id=$value")->delete();
 	  	     }	
-			 $this->success('删除成功',url('index'));    // 成功返回
+			 $this->success('删除成功','https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/add');    // 成功返回
 			
 	  	 }
 		else{
