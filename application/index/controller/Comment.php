@@ -11,13 +11,15 @@ class Comment extends \think\Controller{
 		  $authorid = input('authorid');//评论的人	
 		  $content=input('content');   //评论内容
           $list=db('articlecomment')->insertGetId([
-          'tid'=>$tid,
+          'tid'=>$tid, 
          'authorid'=>$authorid,
          'author'=>$author,
 		 'title'=>$title,
 		 'time'=>time(),
 		 'content'=>$content]);
-		 
+		 if($list){
+		 	db('topic')->where("id=$tid")->setInc('articles');
+		 }
 		 $user=db('user')->where("uid=$authorid")->field('username,tximg')->find();
 		 
 		 return json(['content'=>$content,'authorid'=>$authorid,'supports'=>"0",'tid'=>$tid,'id'=>$list]);
