@@ -10,43 +10,21 @@
 	</head>
 	<body>
 		{include file="nav"}
-		<div class="container">
-		   <div class="one_hang">
-		 	 <form action="https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/Add/del_position" method="POST">
-				<table class="table">
-				 	<tr>
-			            <th>轮播图片</th>
-			            <th>轮播地址</th>
-			            <th><input class="btn btn-danger" type="submit" name="delete" value="删除" /></th>  
-			        </tr>
-				 	{foreach $lb_list as $value}
-			        <tr>
-			       <td ><img src="__PUBLIC__/uploads/{$value.image}"/></td>
-			       <td >{$value.address}</td>
-			       <td><input type="checkbox" name="del_index[]" value="{$value.id}" style="text-align: center;"></td>
-			        </tr>   
-			        {/foreach}
-		         </table>
-		       </form>  
-		       
-		        <form action="https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/Add/del_position_two" method="POST">
-				<table class="table">
-				 	<tr>
-			            <th>签到图片</th>
-			            <th><input class="btn btn-danger" type="submit" name="delete" value="删除" /></th>  
-			        </tr>
-				 	{foreach $qd_img_list as $value}
-			        <tr>
-			       <td ><img src="__PUBLIC__/uploads/{$value.image_qd}"/></td>
-			       <td><input type="checkbox" name="del_index[]" value="{$value.id}" style="text-align: center;"></td>
-			        </tr>   
-			        {/foreach}
-		         </table>
-		       </form>  
-		       
-		    </div>
-		    
-		       <form action="https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/Add/del_index" method="POST">
+		<div class="container-fluid">	
+		    <div class="header">
+			 		签到的格言
+			</div>
+			<div class="row">
+				<div class="col-md-2">
+					
+				</div>
+				<div class="col-md-9">
+					<form action="https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/Add/save_three" enctype="multipart/form-data" method="post"> 
+				    <input type="text" name="text" class="form-control" placeholder="请输入格言" />
+					<input type="submit" class="btn btn-primary tj"   value="添加"/> 
+				</form>
+				
+				<form action="https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/Add/del_index" method="POST">
 				<table class="table">
 				 	<tr>
 			            <th>签到格言</th>
@@ -59,20 +37,37 @@
 			        </tr>   
 			        {/foreach}
 		         </table>
-		       </form>  
-	     </div>
-	</body>
+		       </form>
+				</div>	
+			</div>
+	    </div>		
+	<body>
 </html>
 <style type="text/css">
-	img{
-		width: 70px;
-		height: 70px;
-	}
-   .one_hang{
-   	display: flex;
-   }	
-   .container{
-   	margin-bottom: 60px;
+.header{
+  	text-align: center;
+  	font-size: 20px;
+  }
+ form:nth-child(1){
+ 	margin-bottom: 180px;
+    margin-top: 80px;
+ }
+ .tj{
+  	float: right;
+	margin-top: 27px;
+  }
+   th:nth-child(1){
+   	width: 830px;
+   	text-align: center;
    }
-  
+   td:nth-child(1){
+   	width: 830px;
+   	text-align: center;
+   }
+   th:nth-child(2){
+  	text-align: center;
+  }
+   td:nth-child(2){
+   	text-align: center;
+   }
 </style>
