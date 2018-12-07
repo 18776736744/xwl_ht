@@ -7,7 +7,8 @@ class Categorygd extends \think\Controller
 	public function sjld()
 	{
 		$first_str = input('first_str');
-
+		$syqb = 1;
+		
 		if ($first_str == 1) {
 			$first_str = '请选择';
 		} else {
@@ -54,14 +55,28 @@ class Categorygd extends \think\Controller
 		$e = 0;
 		for ($i = 0; $i < count($second_cate); $i++) {
 			if ($first_cate[$i]) {
+				$hj = 0;
 				for ($j = 0; $j < count($second_cate[$i]); $j++) {
 					if ($e == 0) {
                         # code...
 						$return_second_cate[$e][$j] = $first_str;
 						++$e;
 					}
-					$return_second_cate[$e][$j] = $second_cate[$i][$j]['name'];
+					// $return_second_cate[$e][$j] = $second_cate[$i][$j]['name'];
+					if ($syqb > 0) {
+						// 需要每个加全部
+						if ($hj == 0) {
+							$return_second_cate[$e][$hj] = '全部';
+						}
+						++$hj;
 
+						$return_second_cate[$e][$hj] = $second_cate[$i][$j]['name'];
+
+					} else {
+						// 不需要每个加全部
+						$return_second_cate[$e][$j] = $second_cate[$i][$j]['name'];
+
+					}
 				}
 			}
 			++$e;
@@ -69,23 +84,45 @@ class Categorygd extends \think\Controller
 		}
 		$second_cate = array_values($second_cate);
 
-		$t = 0;
+		$th = 0;
+		
 		for ($i = 0; $i < count($third_cate); $i++) {
 			if ($second_cate[$i]) {
+				$pygh = 0;
 				for ($j = 0; $j < count($third_cate[$i]); $j++) {
 					if ($second_cate[$i][$j]) {
+						$hjjj = 0;
 						for ($k = 0; $k < count($third_cate[$i][$j]); $k++) {
-							if ($t == 0) {
-                                    # code...
-								$return_third_cate[$t][$j][$k] = $first_str;
-								++$t;
+							if ($th == 0) {
+                                # code...
+								$return_third_cate[$th][$j][$k] = $first_str;
+
+								++$th;
+
 							}
-							$return_third_cate[$t][$j][$k] = $third_cate[$i][$j][$k]['name'];
+
+
+							if ($syqb > 0) {
+								if ($hjjj == 0) {
+									$return_third_cate[$th][$pygh][$hjjj] = '全部';
+								++$pygh;
+								$return_third_cate[$th][$pygh][$hjjj] = '全部';
+
+								}
+								++$hjjj;
+
+								$return_third_cate[$th][$pygh][$hjjj] = $third_cate[$i][$j][$k]['name'];
+							} else {
+								$return_third_cate[$th][$j][$k] = $third_cate[$i][$j][$k]['name'];
+
+							}
+
+
 						}
 					}
 				}
 			}
-			++$t;
+			++$th;
 		}
 		return json([
 			'first_cate' => $return_first_cate,

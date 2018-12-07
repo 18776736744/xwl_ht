@@ -84,7 +84,7 @@ class Zhuye extends \think\Controller{
     public function kecheng()
     {
          $uid = input('uid');
-        $u_list = db("kecheng")->where("uid='$uid' and is_delete=2 ")->order("id desc")->paginate(6);
+        $u_list = db("kecheng")->where("uid='$uid' and is_delete=2  and is_shenhe=2 ")->order("id desc")->paginate(6);
         return json($u_list);
     }
     // 机构招聘列表
