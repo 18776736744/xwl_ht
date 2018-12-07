@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/basic/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/css/backstage.css"/>
+		<script src="__PUBLIC__/static/basic/bootstrap.min.js" ></script>
+		<script src="__PUBLIC__/static/basic/jquery-3.2.1.min.js" ></script>
+		
+		<title></title>
+	</head>
+	<body>
+	{include file="nav"}
+	<div class="header">轮播图片</div>
+			
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-2">
+				
+			</div>
+			<div class="col-md-9">
+				<div class="lb">
+		            <form action="https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/Add/save" enctype="multipart/form-data" method="post"> 	
+			        <input type="file" name="img" class="form-control" />
+			        <input type="text" name="text" class="form-control aa" 
+			        	placeholder="幻灯片跳转的路径，例如：/pages/index/box/c_details/c_details?id=19"  />
+			        <input type="submit" class="btn btn-primary tj"   value="添加"/>                   
+				
+		             </form>
+	            </div>	
+				<form action="https://www.xiaowailian.com/xwl_ht/public/index.php?s=/index/Add/del_position" method="POST">
+				<table class="table">
+				 	<tr>
+			            <th>轮播图片</th>
+			            <th>轮播地址</th>
+			            <th><input class="btn btn-danger" type="submit" name="delete" value="删除" /></th>  
+			        </tr>
+				 	{foreach $lb_list as $value}
+			        <tr>
+			       <td ><img src="__PUBLIC__/uploads/{$value.image}"/></td>
+			       <td >{$value.address}</td>
+			       <td><input type="checkbox" name="del_index[]" value="{$value.id}" style="text-align: center;"></td>
+			        </tr>   
+			        {/foreach}
+		         </table>
+		       </form>
+			</div>
+		</div>
+		   
+		
+		
+	</div>	    
+		
+	</body>
+</html>
+<script src="__PUBLIC__/static/basic/index.js" ></script>
+
+<style type="text/css">
+  .lb{
+    margin-bottom: 180px;
+    margin-top: 80px;
+  }
+  .tj{
+  	float: right;
+	margin-top: 27px;
+  	
+  }
+    .header{
+  	text-align: center;
+  	font-size: 20px;
+  	margin-top: 13px;
+  }
+  
+  .aa{
+  	margin-top: 20px;
+  }
+  .slide_box{
+  	margin-left: 5%;
+  }
+  .table img{
+  	width: 170px;
+  	height: 150px;
+  }
+  th{
+  	text-align: center;
+  }
+   td{
+   	text-align: center;
+   }
+</style>

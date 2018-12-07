@@ -172,4 +172,12 @@ class Zhuye extends \think\Controller{
         $gang_wei = db('user')->field("is_busy,has_teacher_zm,money_grade")->where("uid=$uid")->find();
         return json($gang_wei);
     }
+	public function summary(){
+		$uid = input('uid');
+        $list = db("commont_list")->where("pldx='$uid' and status =2")
+        ->field('star,xingzhi')->select();
+		
+		return json($list);
+		
+	}
 }

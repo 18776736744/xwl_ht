@@ -305,7 +305,8 @@ class Ht extends \think\Controller
 					   
 					   
                        
-    $list_kc=db('kecheng')->where('kecheng_name','like',"%".$content."%")->select(); //课程                   
+    $list_kc=db('kecheng')->where('kecheng_name','like',"%".$content."%")
+    ->alias('k')->join('user u','k.uid=u.uid')->field('k.*,u.username')->select(); //课程                   
     
     return json(['user'=>$list_user,'zp'=>$list_zp,'wz'=>$lit_wz,'kc'=>$list_kc]);
    }
