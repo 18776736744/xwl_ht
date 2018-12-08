@@ -91,7 +91,12 @@ class Zhuye extends \think\Controller{
     public function zhaopin()
     {
          $uid = input('uid');
-        $u_list = db("job")->where("uid='$uid'")->order("id desc")->paginate(4);
+        $u_list = db("job")->where("uid='$uid'")->order("id desc")
+        ->paginate(4)->each(function($item){
+        	$item['pub_time'] = date('Y-m-d',$item['pub_time']);
+			return $item;
+        })
+		;
         return json($u_list);
     }
 
