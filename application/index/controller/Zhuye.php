@@ -84,7 +84,7 @@ class Zhuye extends \think\Controller{
     public function kecheng()
     {
          $uid = input('uid');
-        $u_list = db("kecheng")->where("uid='$uid' and is_delete=2  and is_shenhe=2 ")->order("id desc")->paginate(6);
+        $u_list = db("kecheng")->where("uid='$uid' and  is_delete =2 and status =1   and is_shenhe=2 ")->order("id desc")->paginate(6);
         return json($u_list);
     }
     // 机构招聘列表
@@ -103,7 +103,7 @@ class Zhuye extends \think\Controller{
 
         
         if ($headT['type'] == 1) {
-            $headT['kecheng_num'] = db("kecheng")->where("uid=$uid and is_delete=2")->count();
+            $headT['kecheng_num'] = db("kecheng")->where("uid=$uid and  is_delete =2 and status =1   and is_shenhe=2")->count();
             $headT['job_num'] = db("job")->where("uid=$uid")->count();
         }else{
             $headT['uinfo'] = db("user")->where("uid=$uid")->find();

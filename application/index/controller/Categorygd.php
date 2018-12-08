@@ -201,7 +201,7 @@ class Categorygd extends \think\Controller
 			->where($where)->paginate(5)->each(function ($item, $key) {
 				$uid = $item['uid'];
 				if ($item['type'] == 1) {
-					$item['kecheng_num'] = db("kecheng")->where("uid=$uid and is_delete=2")->count();
+					$item['kecheng_num'] = db("kecheng")->where("uid=$uid and  is_delete =2 and status =1   and is_shenhe=2")->count();
 					$item['job_num'] = db("job")->where("uid=$uid")->count();
 				} else {
 					$item['uinfo'] = db("user")->where("uid=$uid")->find();
@@ -288,7 +288,7 @@ class Categorygd extends \think\Controller
 			->join("vertify v", "u.uid=v.uid")->where($where)->paginate(5)->each(function ($item, $key) {
 				$uid = $item['uid'];
 				if ($item['type'] == 1) {
-					$item['kecheng_num'] = db("kecheng")->where("uid=$uid and is_delete=2")->count();
+					$item['kecheng_num'] = db("kecheng")->where("uid=$uid and  is_delete =2 and status =1   and is_shenhe=2")->count();
 					$item['job_num'] = db("job")->where("uid=$uid")->count();
 				} else {
 					$item['uinfo'] = db("user")->where("uid=$uid")->find();
