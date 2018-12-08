@@ -5,7 +5,7 @@ class Ht extends \think\Controller
 {
 	public function kc_list()   //课程推荐
 	{
-		$list = db('kecheng')->where("is_delete =2  and status=1 and is_home=1")->order('id desc')->limit(6)->select();
+		$list = db('kecheng')->where("is_delete =2  and status=1 and is_home=1 and is_shenhe=2")->order('id desc')->limit(6)->select();
 		return json($list);
 	}
 	public function kc_xq()   //课程详情
