@@ -110,11 +110,11 @@ class Zhuye extends \think\Controller{
         }
         $headT['rzname'] = $headT['name'];
         $headT['name'] = db("user")->where("uid=$uid")->value("username");
-        $headT['describtion'] = db("topic")->where("articleclassid=148 and authorid=$uid")->value("describtion"); 
+        $headT['describtion'] = db("user")->where("uid=$uid")->value("introduction"); 
 
-		if(!$headT['describtion']){
-			$headT['describtion'] = db("topic")->where("articleclassid=150 and authorid=$uid")->value("describtion"); 
-		}
+		// if(!$headT['describtion']){
+		// 	$headT['describtion'] = db("topic")->where("articleclassid=150 and authorid=$uid")->value("describtion"); 
+		// }
         
         return json($headT);
     }
