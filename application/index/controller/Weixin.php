@@ -6,15 +6,15 @@ class Weixin extends \think\Controller{
       // 通知是去的pc的notify
 	public function chongzhi(){
  		
- 		$price = input("price");
- 		$openid = input("openid");
- 		$type = input("m_type");
-        $uid = input("uid");
- 		$buy_shop_id = input("buy_shop_id");
-        $theme_name='充值';
-        $trade_time=mt_rand().time();  
+ 		$price = input("price");     //钱
+ 		$openid = input("openid");   //openid
+ 		$type = input("m_type");     //
+    $uid = input("uid");  
+ 		$buy_shop_id = input("buy_shop_id");	
+    $theme_name='充值';
+    $trade_time=mt_rand().time();  
 
-        $t1 = $type;
+    $t1 = $type;
 
 		$t2 = $buy_shop_id;
 
@@ -28,13 +28,13 @@ class Weixin extends \think\Controller{
 
        //支付需要的数据，详情在微信支付的文档
          $params = [
-            'body' => $theme_name,
-            'out_trade_no' => $trade_time,
-            'total_fee' => $price*100,
+            'body' => $theme_name,                              //商品描述
+            'out_trade_no' => $trade_time,                      //订单号
+            'total_fee' => $price*100,                         
             'product_id'=>$proid,
             'attach'=>$proid,
-            'time_start'=>date ( "YmdHis" ) ,
-            'time_expire'=>date ( "YmdHis", time () + 3600 ),
+            'time_start'=>date ( "YmdHis" ) ,                  //交易的起始时间
+            'time_expire'=>date ( "YmdHis", time () + 3600 ),  //交易结束时间
          ];
  
 

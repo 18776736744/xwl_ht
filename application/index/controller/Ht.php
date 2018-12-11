@@ -209,6 +209,7 @@ class Ht extends \think\Controller
 	  
 	  return json($list);
   }
+  
   public function my_recruit(){   //收藏页面查看课程
   	  $uid=input('uid');
 	 
