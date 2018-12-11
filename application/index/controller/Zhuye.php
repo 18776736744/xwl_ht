@@ -8,8 +8,6 @@ class Zhuye extends \think\Controller{
         $type = db('vertify')->where("uid='$uid'")->value('type');
         return json($type);
     }
-
-
     // 机构头像
     public function head(){
         $uid = input('uid');
@@ -80,6 +78,45 @@ class Zhuye extends \think\Controller{
 			
         return json($u_list);
     }
+   
+    public function pinglun_good() // 机构评论列表，好评
+    {
+        $uid = input('uid');
+		
+        $status="2";
+		$xingzhi="1";
+        $u_list = db("commont_list")->alias('c')
+            ->field("c.*,u.username,u.tximg")
+            ->join("user u","c.plr = u.uid")
+            ->order("c.id desc")
+            ->where(['pldx'=>$uid,'status' =>$status,'xingzhi'=>$xingzhi])->paginate(5)
+			->each(
+			function($item){
+				$item['add_time'] = date("Y-m-d",$item['add_time']);
+				return $item;
+			}
+			  );
+        return json($u_list);
+    }
+	   public function pinglun_bad() // 机构评论列表，差评
+    {
+        $uid = input('uid');
+        $status="2";
+		$xingzhi="2";
+        $u_list = db("commont_list")->alias('c')
+            ->field("c.*,u.username,u.tximg")
+            ->join("user u","c.plr = u.uid")
+            ->order("c.id desc")
+            ->where(['pldx'=>$uid,'status' =>$status,'xingzhi'=>$xingzhi])->paginate(5)
+			->each(
+			function($item){
+				$item['add_time'] = date("Y-m-d",$item['add_time']);
+				return $item;
+			}
+			  );
+        return json($u_list);
+    }
+	
     // 机构课程列表
     public function kecheng()
     {
@@ -183,6 +220,18 @@ class Zhuye extends \think\Controller{
         ->field('star,xingzhi')->select();
 		
 		return json($list);
+		
+	}
+	public function summary_gd(){
+		$uid = input('uid');
+		$list = db("commont_list")->where("pldx='$uid'")
+        ->field('star,xingzhi')->select();
+        $list_good = db("commont_list")->where("pldx='$uid' and xingzhi =1")
+        ->field('star,xingzhi')->select();
+		$list_bad = db("commont_list")->where("pldx='$uid' and xingzhi =2")
+        ->field('star,xingzhi')->select();
+		
+		return json(['qb'=>$list,'good'=>$list_good,'bad'=>$list_bad]);
 		
 	}
 }
