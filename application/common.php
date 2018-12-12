@@ -94,6 +94,9 @@ function getUinfo($openid)
     $info = db('user')->field('*')
                     ->where('openid', $openid)
                     ->find();
+    if (strstr($info['tximg'],'data/avatar')) {
+        $info['tximg'] = '../../'.$info['tximg'];
+    }
     $info['vertify'] = db('vertify')->field('type,name,status')
             ->where('uid='.$info['uid'])
             ->find();

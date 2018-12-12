@@ -6,8 +6,8 @@ class Paydetail extends Controller{
 	public function paydetail()
 	{
 		$uid = input("uid");
-		$paylog = db('paylog')->alias('c')->join('user d','d.uid=c.touid')->field('c.id,c.type,c.money,c.time,d.tximg,c.fromuid,c.typeid,c.order_sn')
-				->where("uid=$uid")
+		$paylog = db('paylog')->alias('c')->join('user d','d.uid=c.touid','left')->field('c.id,c.type,c.money,c.time,d.tximg,c.fromuid,c.typeid,c.order_sn')
+				->where("d.uid=$uid")
 				->order('time desc')
 				->select();
 		foreach ($paylog  as $key => $money) {
