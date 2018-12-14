@@ -84,5 +84,42 @@ class Video extends \think\Controller
                 ->find();
         return json($info);
     }
+
+
+    // 学生视频辅导班级
+	public function getStuClass()
+	{
+
+
+		$uid = input('uid');
+		$where = "  u.uid=" . $uid;
+
+        $first_cate = db("user")->alias("u")
+                    ->field("h.uname,h.kemu")
+                    ->join("huifang_student hs","u.phone=hs.mobile","left")
+                    ->join("huifang h","h.id=hs.hf_id","left")
+                    ->where($where)
+                    ->select();
+        
+         
+
+		$return_first_cate = [];
+		$return_second_cate = $return_third_cate = [];
+
+		foreach ($first_cate as $key => $value) {
+			$return_first_cate[$value['uname']] = $value['uname'];
+		}
+
+
+		foreach ($first_cate as $key => $value) {
+			$return_second_cate[$value['uname']][] = $value['kemu'];
+		}
+
+		return json([
+			'first_cate' => array_values($return_first_cate),
+			'second_cate' => array_values($return_second_cate),
+			'third_cate' => []
+		]);
+	}
     
 }

@@ -163,6 +163,19 @@ class Identificate extends \think\Controller
 		return json(getUinfo($openid));
 	}
 
+	// 更新资料
+	public function editIntroduction()
+	{
+		$openid=input('openid');
+		$introduction=input('introduction');
+
+		db('user')->where('openid',$openid)->update([
+			'introduction'=>$introduction,
+		]);
+
+		return json(getUinfo($openid));
+	}
+
 	// 更新地址
 	public function updateAddr()
 	{
