@@ -25,8 +25,8 @@ class Qrcode extends \think\Controller {
                 return json($code);
          }
             //获取token
-            $appID = "wxa4499dcf136ab992";
-            $appSecret = "5d6444b3d79e04cbc7217d34f3c92fe1";
+            $appID = "wx34109c6158171baf";
+            $appSecret = "557525f1e124be4d0b6b282a88b5df37";
 			//接口调用凭证
             $tokenUrl= "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" .$appID ."&secret=".$appSecret;
             $getArr=array();

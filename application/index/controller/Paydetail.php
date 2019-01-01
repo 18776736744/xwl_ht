@@ -30,7 +30,27 @@ class Paydetail extends Controller{
 function getType($money)
 {
 	switch ($money ['type']) {
+		
+		case 'usertixian':
+			$money ['operation'] = '提现';
 
+			$money ['money'] = "提现" . $money ['money'] . "元";
+
+
+
+
+			$money ['content'] = "充值";
+			break;
+		case 'smcz':
+			$money ['operation'] = '扫码充值';
+
+			$money ['money'] = "充值" . $money ['money'] . "元";
+
+
+
+
+			$money ['content'] = "充值";
+			break;
 		case 'tohuifangmsg' :
 
 			$money ['operation'] = '回访发短信';

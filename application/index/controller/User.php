@@ -159,8 +159,8 @@ class User extends \think\Controller{
 	}
 
 	public function login() {
-		$appid = 'wxa4499dcf136ab992';
-		$appSecret = '5d6444b3d79e04cbc7217d34f3c92fe1';
+		$appid = 'wx34109c6158171baf';
+		$appSecret = '557525f1e124be4d0b6b282a88b5df37';
 		$code = input('code');
 		$url = "https://api.weixin.qq.com/sns/jscode2session?appid=".$appid."&secret=".$appSecret."&js_code=".$code."&grant_type=authorization_code";
 		$arr = vget($url);

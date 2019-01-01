@@ -49,20 +49,27 @@ class Video extends \think\Controller
             # code...
             $lists = db("video")
                 ->where("uid=$uid")
-                ->field("video_name title,id,add_time viewtime,views,is_delete")
+                ->field("video_name title,id,add_time viewtime,views,is_delete,video")
                 ->order('id desc')
                 ->select();
         }else if(!empty($uid)&&!empty($id)){
             $lists = db("video")
                 ->where(['id'=>$id,'uid'=>$uid])
-                ->field("video_name title,id,add_time viewtime,views,is_delete")
+                ->field("video_name title,id,add_time viewtime,views,is_delete,video")
                 ->order('id desc')
                 ->select();
         }else{
             $lists = db("video")
-                ->field("video_name title,id,add_time viewtime,views,is_delete")
+                ->field("video_name title,id,add_time viewtime,views,is_delete,video")
                 ->order('id desc')
                 ->select();
+        }
+
+        foreach ($lists as $key => $value) {
+            if (strstr($value['video'],'uploads')) {
+                $lists[$key]['video'] = 'https://www.xiaowailian.com/'.$value['video'];
+            }
+           
         }
         return json($lists);
     }
